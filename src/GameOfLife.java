@@ -11,20 +11,21 @@ import javax.swing.JDesktopPane;
 import javax.swing.JInternalFrame;
 
 /** 
- * Class for Conways "Game of Life"
+ * Class which creates a model for Conways "Game of Life"
  * MVC: Model
  * 
  * @author Philipp Backes, 191710
  * @author Viet Cuong Nguyen, 191515
  */
 public class GameOfLife extends JApplet implements MouseListener, MouseMotionListener,Runnable
-{
+{	
+	//Private and public members
 	private static final long serialVersionUID = 1L;
 	private JDesktopPane desk;
 	private Dimension gameBoardSize = null;
-    //private Cell board[];
     private ArrayList<CellButton> boardButtons = new ArrayList<>(0);
-	public Container container = new Container();
+    private boolean mouseIsDragging = false;
+	Container container = new Container();
     
 	/**
 	 * Constructor
@@ -32,17 +33,17 @@ public class GameOfLife extends JApplet implements MouseListener, MouseMotionLis
 	public GameOfLife() 
 	{
 		desk = new JDesktopPane(); //
-		desk.setDesktopManager(new DefaultDesktopManager()); //
-		setContentPane(desk); //
+		desk.setDesktopManager(new DefaultDesktopManager());
+		setContentPane(desk);
 	    addMouseListener(this); 
 	    addMouseMotionListener(this);
 	}
 	
 	/**
-	 * Method which add children to JDesktopPane
-	 * @param child
-	 * @param x
-	 * @param y
+	 * Method which adds children frames to JDesktopPane
+	 * @param child child frame to be added (JInternalFrame)
+	 * @param x X-Position of the child frame to be added (int)
+	 * @param y Y-Position of the child frame to be added (int)
 	 */
 	public void addChild(JInternalFrame child, int x, int y) 
 	{
@@ -54,8 +55,8 @@ public class GameOfLife extends JApplet implements MouseListener, MouseMotionLis
 	}
 	
 	/**
-	 * Method which set new size of game board and create it
-	 * @param newDimension 
+	 * Method which sets the amount of rows and columns of the game board and creates it
+	 * @param newDimension the amount of rows and columns of the game board to be set (Dimension)
 	 */
 	public void setBoardSize(Dimension newDimension)
 	{
@@ -66,6 +67,7 @@ public class GameOfLife extends JApplet implements MouseListener, MouseMotionLis
 			{
 				JButton tmpButton = new JButton();
 				tmpButton.addMouseListener(this);
+				tmpButton.addMouseMotionListener(this);
 				container.add(tmpButton);
 				CellButton tmpCellButton = new CellButton(tmpButton, new Cell(i, j));
 				boardButtons.add(tmpCellButton);
@@ -74,6 +76,9 @@ public class GameOfLife extends JApplet implements MouseListener, MouseMotionLis
 		}
 	}
 	
+	/**
+	 * Method which updates the game board by adding JButtons in its respective color to it
+	 */
 	public void showBoard()
 	{
 		for(CellButton cellButton : boardButtons)
@@ -94,17 +99,62 @@ public class GameOfLife extends JApplet implements MouseListener, MouseMotionLis
 		Konsole.run(gameOfLife, 512, 512);
 	}
 	
-	public void mouseDragged(MouseEvent e)
-	{
-		// Painting all cells to life
-		
+	/**
+	 * Method which checks whether the left mouse button is released or not
+	 * @param e Mouse event to be triggered (MouseEvent)
+	 */
+	public void mouseReleased(MouseEvent e) 
+	{	
+		mouseIsDragging = false;
 	}
 	
-	@Override
-	public void mouseReleased(MouseEvent e) 
+	/**
+	 * Method which checks whether the left mouse button is pressed or not
+	 * @param e Mouse event to be triggered (MouseEvent)
+	 */
+	public void mousePressed(MouseEvent e) 
+	{	
+		if(e.getButton() == MouseEvent.BUTTON1)
+		{
+			mouseIsDragging = true;
+		}
+	}
+	
+	/**
+	 * Method which revives several cells if while dragging with the left mouse button
+	 * @param e Mouse event to be triggered (MouseEvent)
+	 */
+	public void mouseEntered(MouseEvent e) 
 	{
-		// Position for new points (living cells)
-		if(e.getSource() instanceof JButton)
+		if(mouseIsDragging && GameOfLifeChild.menuModePaint.isSelected())
+		{
+			if(e.getSource() instanceof JButton)
+			{
+				JButton sourceButton = (JButton)e.getSource();
+				int index = 0;
+				for(CellButton cellButton : boardButtons)
+				{
+					if(cellButton.getButton().equals(sourceButton) && !(boardButtons.get(index).getCell().isAlive))
+					{
+						boardButtons.get(index).getCell().reborn();
+					}
+					index++;
+				}	
+			}
+			container.removeAll();
+			showBoard();
+			revalidate();
+			repaint();
+		}
+	}
+	
+	/**
+	 * Method which revives or kills a cell if clicked on it
+	 * @param e Mouse event to be triggered (MouseEvent)
+	 */
+	public void mouseClicked(MouseEvent e) 
+	{
+		if(e.getSource() instanceof JButton && GameOfLifeChild.menuModeSet.isSelected() && e.getButton() == MouseEvent.BUTTON1)
 		{
 			JButton sourceButton = (JButton)e.getSource();
 			int index = 0;
@@ -115,34 +165,38 @@ public class GameOfLife extends JApplet implements MouseListener, MouseMotionLis
 					boardButtons.get(index).getCell().switchState();
 				}
 				index++;
-			}
-			
+			}		
 		}
 		container.removeAll();
 		showBoard();
 		revalidate();
 		repaint();
-		
 	}
 	
 	// Unused events
 	@Override
 	public void mouseMoved(MouseEvent e) {}
 	@Override
-	public void mouseClicked(MouseEvent e) {}
-	@Override
-	public void mousePressed(MouseEvent e) {}
-	@Override
-	public void mouseEntered(MouseEvent e) {}
+	public void mouseDragged(MouseEvent e) {}
 	@Override
 	public void mouseExited(MouseEvent e) {}
-
-
-	// MVC: Controller
-	@Override
+	
+	/**
+	 * Method which runs the game logic as a thread
+	 * MVC: Controller
+	 */
 	public void run()
 	{
 		// TODO Auto-generated method stub
 		
+	}
+	
+	/**
+	 * Method which returns an array list of CellButton objects for the Action event "Reset"
+	 * @return array list of CellButton objects (ArrayList<CellButton>)
+	 */
+	public ArrayList<CellButton> getboardButtons()
+	{
+		return boardButtons;
 	}
 }

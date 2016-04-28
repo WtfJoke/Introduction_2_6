@@ -1,17 +1,23 @@
 import javax.swing.JButton;
 
 /** 
- * Class for cells
+ * Class which connects an Cell object with a JButton object
  * 
  * @author Philipp Backes, 191710
  * @author Viet Cuong Nguyen, 191515
  */
 public class CellButton extends JButton
-{
+{	
+	//Private members
 	private static final long serialVersionUID = 1L;
 	private JButton button = new JButton();
 	private Cell cell = new Cell(0, 0);
 	
+	/**
+	 * Constructor
+	 * @param newButton new JButton of the CellButton object
+	 * @param newCell new Cell of the CellButton object
+	 */
 	public CellButton(JButton newButton, Cell newCell) 
 	{
 		button = newButton;
@@ -19,7 +25,8 @@ public class CellButton extends JButton
 	}
 
 	/**
-	 * @return the button
+	 * Method which returns the JButton of a CellButton object
+	 * @return JButton of a CellButton object (JButton)
 	 */
 	public JButton getButton() 
 	{
@@ -27,7 +34,8 @@ public class CellButton extends JButton
 	}
 
 	/**
-	 * @param button the button to set
+	 * Method which sets a JButton to a CellButton object
+	 * @param button the JButton to be set
 	 */
 	public void setButton(JButton button) 
 	{
@@ -35,7 +43,8 @@ public class CellButton extends JButton
 	}
 
 	/**
-	 * @return the cell
+	 * Method which returns the cell of a CellButton object
+	 * @return Cell of a CellButton object (Cell)
 	 */
 	public Cell getCell() 
 	{
@@ -43,13 +52,11 @@ public class CellButton extends JButton
 	}
 
 	/**
-	 * @param cell the cell to set
+	 * Method which sets a cell to a CellButton object
+	 * @param cell Cell object to be set
 	 */
 	public void setCell(Cell cell) 
 	{
 		this.cell = cell;
 	}
-	
-	
-
 }
