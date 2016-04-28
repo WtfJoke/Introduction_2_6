@@ -4,9 +4,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
-import java.util.Observable;
-import java.util.Observer;
-
 import javax.swing.DefaultDesktopManager;
 import javax.swing.JApplet;
 import javax.swing.JButton;
@@ -15,7 +12,7 @@ import javax.swing.JInternalFrame;
 
 /** 
  * Class for Conways "Game of Life"
- * Using Threads, MDI and MVC
+ * MVC: Model
  * 
  * @author Philipp Backes, 191710
  * @author Viet Cuong Nguyen, 191515
@@ -25,8 +22,8 @@ public class GameOfLife extends JApplet implements MouseListener, MouseMotionLis
 	private static final long serialVersionUID = 1L;
 	private JDesktopPane desk;
 	private Dimension gameBoardSize = null;
-    private ArrayList<Cell> board = new ArrayList<Cell>(0);
-	ArrayList<JButton> boardButtons = new ArrayList<JButton>(0);
+    //private Cell board[];
+    private ArrayList<CellButton> boardButtons = new ArrayList<>(0);
 	public Container container = new Container();
     
 	/**
@@ -67,52 +64,23 @@ public class GameOfLife extends JApplet implements MouseListener, MouseMotionLis
 		{
 			for(int j = 0; j < gameBoardSize.getWidth(); j++)
 			{
-				board.add(new Cell(i, j));
+				JButton tmpButton = new JButton();
+				tmpButton.addMouseListener(this);
+				container.add(tmpButton);
+				CellButton tmpCellButton = new CellButton(tmpButton, new Cell(i, j));
+				boardButtons.add(tmpCellButton);
+				tmpButton.setBackground(boardButtons.get(i * j).getCell().cellColor);
 			}
 		}
 	}
 	
 	public void showBoard()
 	{
-		for(int i = 0; i < gameBoardSize.getHeight(); i++)
+		for(CellButton cellButton : boardButtons)
 		{
-			for(int j = 0; j < gameBoardSize.getWidth(); j++)
-			{
-				JButton tmpButton = new JButton();
-				tmpButton.setBackground(board.get(i * j).cellColor);
-				tmpButton.addMouseListener(this);
-				container.add(tmpButton);
-				boardButtons.add(tmpButton);
-			}
-		}
-		
-	}
-	
-	/**
-	 * Method which set living cell
-	 * @param point
-	 */
-	public void setLivingCell(int indexOfList)
-	{
-		board.get(indexOfList).switchState();
-	}
-	
-	/**
-	 * Method which switch cell
-	 * @param cell
-	 */
-	public void switchCell(Cell cell)
-	{
-		if(board.contains(cell))
-		{
-			if(board.get(board.indexOf(cell)).isAlive())
-			{
-				board.get(board.indexOf(cell)).die();
-			}
-			else
-			{
-				board.get(board.indexOf(cell)).reborn();
-			}
+			JButton tmpButton = cellButton.getButton();
+			tmpButton.setBackground(cellButton.getCell().cellColor);
+			container.add(tmpButton);
 		}
 	}
 	
@@ -126,7 +94,7 @@ public class GameOfLife extends JApplet implements MouseListener, MouseMotionLis
 		Konsole.run(gameOfLife, 512, 512);
 	}
 	
-	public void mouseDragged(MouseEvent e) 
+	public void mouseDragged(MouseEvent e)
 	{
 		// Painting all cells to life
 		
@@ -139,12 +107,17 @@ public class GameOfLife extends JApplet implements MouseListener, MouseMotionLis
 		if(e.getSource() instanceof JButton)
 		{
 			JButton sourceButton = (JButton)e.getSource();
-			if(boardButtons.contains(sourceButton))
+			int index = 0;
+			for(CellButton cellButton : boardButtons)
 			{
-				setLivingCell(boardButtons.indexOf(sourceButton));
+				if(cellButton.getButton().equals(sourceButton))
+				{
+					boardButtons.get(index).getCell().switchState();
+				}
+				index++;
 			}
+			
 		}
-		boardButtons.clear();
 		container.removeAll();
 		showBoard();
 		revalidate();
@@ -165,8 +138,9 @@ public class GameOfLife extends JApplet implements MouseListener, MouseMotionLis
 	public void mouseExited(MouseEvent e) {}
 
 
+	// MVC: Controller
 	@Override
-	public void run() 
+	public void run()
 	{
 		// TODO Auto-generated method stub
 		

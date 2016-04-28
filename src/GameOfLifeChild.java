@@ -4,14 +4,8 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
-import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
-
-import javax.swing.JButton;
 import javax.swing.JInternalFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -19,6 +13,7 @@ import javax.swing.JMenuItem;
 
 /** 
  * Class for Conways "Game of Life" children
+ * MVC: View
  * 
  * @author Philipp Backes, 191710
  * @author Viet Cuong Nguyen, 191515
@@ -86,9 +81,8 @@ public class GameOfLifeChild extends JInternalFrame implements Observer
 		});
 		cp = getContentPane();
 		cp.setLayout(new GridLayout((int)boardDimension.getWidth(), (int)boardDimension.getHeight()));
-		golRef.setBoardSize(boardDimension);
 		golRef.container = cp;
-		golRef.showBoard();
+		golRef.setBoardSize(boardDimension);
 		setContentPane(cp);
 
 	    
