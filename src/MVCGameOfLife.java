@@ -16,14 +16,15 @@ public class MVCGameOfLife extends JApplet
 	//Private and public members
 	private static final long serialVersionUID = 1L;
 	private JDesktopPane desk;
-	public GameOfLife gol;
+	public GameOfLifeBoard gol;
     
 	/**
 	 * Constructor
 	 */
 	public MVCGameOfLife() 
 	{
-		gol = new GameOfLife(new Dimension(10, 10));
+        // Setup the game board size with proper boundaries
+		gol = new GameOfLifeBoard(new Dimension(250/20-2, 290/20-2));
 		desk = new JDesktopPane(); //
 		desk.setDesktopManager(new DefaultDesktopManager());
 		setContentPane(desk);
@@ -39,7 +40,7 @@ public class MVCGameOfLife extends JApplet
 	public void addChild(JInternalFrame child, int x, int y) 
 	{
 		child.setLocation(x, y);
-		child.setSize(256, 256);
+		child.setSize(250, 290);
 		child.setDefaultCloseOperation(JInternalFrame.DISPOSE_ON_CLOSE);
 		desk.add(child);
 		child.setVisible(true);

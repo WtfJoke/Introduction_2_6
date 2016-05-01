@@ -1,7 +1,6 @@
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -9,8 +8,6 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.Observable;
 import java.util.Observer;
-
-import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JInternalFrame;
 import javax.swing.JMenu;
@@ -32,7 +29,8 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
     private boolean mouseIsDragging = false;
 	private Container cp = new Container();
 	private MVCGameOfLife mvcGOL;
-	private GameOfLife gol;
+	private GameOfLifeBoard golBoard;
+	private GameOfLifeView golView;
 	
 	JMenuBar menuBar = new JMenuBar();
 	JMenu menuMode = new JMenu("Mode");
@@ -59,28 +57,26 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 	
 	/**
 	 * Constructor
-	 * @param gol GameOfLife Reference
+	 * @param mvcGO	MVCGameOfLife reference
+	 * @param golBoard GameOfLife reference
 	 */
-	public GameOfLifeChildFrame(MVCGameOfLife mvcGOL, GameOfLife gol) 
+	public GameOfLifeChildFrame(MVCGameOfLife mvcGOL, GameOfLifeBoard golBoard) 
 	{
 		super("Game of Life " + (++nr), true, true);
 		this.mvcGOL = mvcGOL;
-		this.gol = gol;
+		this.golBoard = golBoard;
+		this.golView = new GameOfLifeView(this.golBoard);
+		this.golBoard.addObserver(golView);
 		createMenu();
 		cp = getContentPane();
-		cp.setLayout(new GridLayout((int)boardDimension.getWidth(), (int)boardDimension.getHeight()));
-		//this.gol.setGameBoardSize(boardDimension);
 	    addMouseListener(this); 
 	    addMouseMotionListener(this);
-		for(CellButton cellButton : this.gol.getBoardButtons())
-		{
-			cellButton.getButton().addMouseListener(this);
-			cellButton.getButton().addMouseMotionListener(this);
-			cp.add(cellButton.getButton());
-		}
+	    this.golView.updateGameBoardSize();
+	    cp.add(this.golView);
 		setContentPane(cp);	    
 		setIconifiable(true); 
 		setMaximizable(true);
+		setVisible(true);
 	}
 	
 	/**
@@ -90,7 +86,8 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 	 */
 	public void update(Observable o, Object arg) 
 	{
-		
+		revalidate();
+		repaint();
 	}
 	
 	/**
@@ -110,6 +107,7 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 			{
 				menuModeSet.setSelected(true);
 				menuModePaint.setSelected(false);
+				golBoard.notifyObservers();
 			}
 		});
 		menuMode.add(menuModePaint);
@@ -123,6 +121,7 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 			{	
 				menuModePaint.setSelected(true);
 				menuModeSet.setSelected(false);
+				golBoard.notifyObservers();
 			}
 		});
 		menuMode.addSeparator();
@@ -134,14 +133,8 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 		{
 			public void actionPerformed(ActionEvent e) 
 			{
-				for(int i = 0; i < gol.getBoardButtons().size(); i++)
-				{
-					gol.getBoardButtons().get(i).getCell().die();
-				}
-				cp.removeAll();
-				//golRef.showBoard(); Need to be changed
-				revalidate();
-				repaint();
+				golBoard.resetGameBoard();
+				golBoard.notifyObservers();
 			}		
 		});
 		menuBar.add(menuMode);
@@ -164,22 +157,10 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 			 */
 			public void actionPerformed(ActionEvent e) 
 			{	
-				mvcGOL.addChild(new GameOfLifeChildFrame(mvcGOL, gol), 20, 20);
+				mvcGOL.addChild(new GameOfLifeChildFrame(mvcGOL, golBoard), 20, 20);
+				golBoard.notifyObservers();
 			}
 		});
-	}
-	
-	/**
-	 * Method which updates the game board by adding JButtons in its respective color to it
-	 */
-	public void showBoard()
-	{
-		for(CellButton cellButton : gol.getBoardButtons())
-		{
-			JButton tmpButton = cellButton.getButton();
-			tmpButton.setBackground(cellButton.getCell().cellColor);
-			cp.add(tmpButton);
-		}
 	}
 	
 	/**
@@ -211,24 +192,15 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 	{
 		if(mouseIsDragging && menuModePaint.isSelected())
 		{
-			if(e.getSource() instanceof JButton)
-			{
-				JButton sourceButton = (JButton)e.getSource();
-				int index = 0;
-				for(CellButton cellButton : gol.getBoardButtons())
-				{
-					if(cellButton.getButton().equals(sourceButton) && !(gol.getBoardButtons().get(index).getCell().isAlive))
-					{
-						gol.getBoardButtons().get(index).getCell().reborn();
-					}
-					index++;
-				}	
-			}
-			cp.removeAll();
-			showBoard();
-			revalidate();
-			repaint();
-		}
+			int x = e.getPoint().x/golView.BLOCK_SIZE-1;
+	        int y = e.getPoint().y/golView.BLOCK_SIZE-4;
+	        if ((x >= 0) && (x < golBoard.getGameBoardSize().getWidth()) && (y >= 0) && (y < golBoard.getGameBoardSize().getHeight())) 
+	        {
+	        	golBoard.addCell(x,y);
+	        }
+	        golBoard.boardChanged();
+	        golBoard.notifyObservers();
+	  	}	
 	}
 	
 	/**
@@ -237,23 +209,24 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 	 */
 	public void mouseClicked(MouseEvent e) 
 	{
-		if(e.getSource() instanceof JButton && menuModeSet.isSelected() && e.getButton() == MouseEvent.BUTTON1)
+		if(menuModeSet.isSelected() && e.getButton() == MouseEvent.BUTTON1)
 		{
-			JButton sourceButton = (JButton)e.getSource();
-			int index = 0;
-			for(CellButton cellButton : gol.getBoardButtons())
-			{
-				if(cellButton.getButton().equals(sourceButton))
-				{
-					gol.getBoardButtons().get(index).getCell().switchState();
-				}
-				index++;
-			}		
+			int x = e.getPoint().x/golView.BLOCK_SIZE-1;
+			int y = e.getPoint().y/golView.BLOCK_SIZE-4;
+	        if ((x >= 0) && (x < golBoard.getGameBoardSize().getWidth()) && (y >= 0) && (y < golBoard.getGameBoardSize().getHeight())) 
+	        {
+	        	if(golBoard.getCellList().contains(new Cell(x, y)))
+	        	{
+		        	golBoard.removeCell(x, y);
+	        	}
+	        	else
+	        	{
+		        	golBoard.addCell(x,y);
+	        	}
+	        }
+	        golBoard.boardChanged();
+	        golBoard.notifyObservers();
 		}
-		cp.removeAll();
-		showBoard();
-		revalidate();
-		repaint();
 	}
 	
 	/**
@@ -261,9 +234,8 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 	 */
 	public void run()
 	{
-		showBoard();
-		revalidate();
-		repaint();
+		//revalidate();
+		//repaint();
 	}
 	
 	// Unused events
