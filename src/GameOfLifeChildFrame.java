@@ -1,6 +1,5 @@
 import java.awt.Color;
 import java.awt.Container;
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -53,7 +52,7 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 	JMenuItem menuFigureGlider = new JMenuItem("Glider");
 	JMenuItem menuWindowSpaceship = new JMenuItem("Light-Weight Spaceship");
 	
-	Dimension boardDimension = new Dimension(10, 10);
+	//Dimension boardDimension = new Dimension(10, 10); Not necessary???
 	
 	/**
 	 * Constructor
@@ -134,6 +133,7 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 			public void actionPerformed(ActionEvent e) 
 			{
 				golBoard.resetGameBoard();
+				golBoard.boardChanged();
 				golBoard.notifyObservers();
 			}		
 		});
@@ -188,7 +188,7 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 	 * Method which revives several cells if while dragging with the left mouse button
 	 * @param e Mouse event to be triggered (MouseEvent)
 	 */
-	public void mouseEntered(MouseEvent e) 
+	public void mouseDragged(MouseEvent e) 
 	{
 		if(mouseIsDragging && menuModePaint.isSelected())
 		{
@@ -242,7 +242,7 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 	@Override
 	public void mouseMoved(MouseEvent e) {}
 	@Override
-	public void mouseDragged(MouseEvent e) {}
+	public void mouseEntered(MouseEvent e) {}
 	@Override
 	public void mouseExited(MouseEvent e) {}
 }

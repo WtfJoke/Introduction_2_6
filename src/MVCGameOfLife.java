@@ -40,7 +40,7 @@ public class MVCGameOfLife extends JApplet
 	public void addChild(JInternalFrame child, int x, int y) 
 	{
 		child.setLocation(x, y);
-		child.setSize(250, 290);
+		child.setSize(250, 330);
 		child.setDefaultCloseOperation(JInternalFrame.DISPOSE_ON_CLOSE);
 		desk.add(child);
 		child.setVisible(true);

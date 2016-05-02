@@ -9,7 +9,7 @@ import java.awt.Point;
  */
 public class Cell 
 {
-	Point cellPoint = new Point();
+	public Point cellPoint = new Point();
 	boolean isAlive = false;
 	Color cellColor = Color.RED;
 
