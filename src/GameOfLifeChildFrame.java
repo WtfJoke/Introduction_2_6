@@ -1,5 +1,6 @@
 import java.awt.Color;
 import java.awt.Container;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -215,7 +216,7 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 			int y = e.getPoint().y/golView.BLOCK_SIZE-4;
 	        if ((x >= 0) && (x < golBoard.getGameBoardSize().getWidth()) && (y >= 0) && (y < golBoard.getGameBoardSize().getHeight())) 
 	        {
-	        	if(golBoard.getCellList().contains(new Cell(x, y)))
+	        	if(golBoard.getCellList().contains(new Point(x, y)))
 	        	{
 		        	golBoard.removeCell(x, y);
 	        	}
