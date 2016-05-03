@@ -14,6 +14,7 @@ public class GameOfLifeBoard extends Observable
 {
 	private Dimension gameBoardSize = null;
 	private ArrayList<Point> cellList = new ArrayList<Point>(0);
+	//private ArrayList<Point> deadCellList = new ArrayList<Point>(0);
 	
 	/**
 	 * Method to call setChanged
