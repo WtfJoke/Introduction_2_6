@@ -13,8 +13,8 @@ import java.util.Observable;
 public class GameOfLifeBoard extends Observable
 {
 	private Dimension gameBoardSize = null;
-	private ArrayList<Point> cellList = new ArrayList<Point>(0);
-	//private ArrayList<Point> deadCellList = new ArrayList<Point>(0);
+	private ArrayList<Point> deadCellList = new ArrayList<Point>(0);
+	private ArrayList<Point> livingCellList = new ArrayList<Point>(0);
 	
 	/**
 	 * Method to call setChanged
@@ -25,45 +25,71 @@ public class GameOfLifeBoard extends Observable
 	}
 	
 	/**
-	 * Add cells to cellList
+	 * Add a cell to deadCellList
 	 * @param x
 	 * @param y
 	 */
-	public void addCell(int x, int y) 
+	public void addDeadCell(int x, int y) 
 	{
-        if (!cellList.contains(new Point(x,y))) 
-        {
-        	cellList.add(new Point(x,y));
-        }
+        deadCellList.add(new Point(x,y));
     }
 	
 	/**
-	 * Remove specific cell from cellList
+	 * Add a cell to livingCellList
 	 * @param x
 	 * @param y
 	 */
-	public void removeCell(int x, int y) 
+	public void addLivingCell(int x, int y) 
 	{
-		cellList.remove(new Point(x,y));
+        livingCellList.add(new Point(x,y));
     }
 	
 	/**
-	 * Getter for cellList
-	 * @return the cellList
+	 * Remove a specific cell from deadCellList
+	 * @param x
+	 * @param y
 	 */
-	public ArrayList<Point> getCellList() 
+	public void removeDeadCell(int x, int y) 
 	{
-		return cellList;
+		deadCellList.remove(new Point(x,y));
+    }
+	
+	/**
+	 * Remove a specific cell from livingCellList
+	 * @param x
+	 * @param y
+	 */
+	public void removeLivingCell(int x, int y) 
+	{
+		livingCellList.remove(new Point(x,y));
+    }
+	
+	/**
+	 * Getter for deadCellList
+	 * @return the deadCellList
+	 */
+	public ArrayList<Point> getDeadCellList() 
+	{
+		return deadCellList;
+	}
+	
+	/**
+	 * Getter for livingCellList
+	 * @return the livingCellList
+	 */
+	public ArrayList<Point> getLivingCellList() 
+	{
+		return livingCellList;
 	}
 
 	/**
 	 * Setter for cellList
 	 * @param cellList the cellList to set
 	 */
-	public void setCellList(ArrayList<Point> cellList) 
+	/*public void setCellList(ArrayList<Point> cellList) 
 	{
 		this.cellList = cellList;
-	}
+	}*/
 
 	/**
 	 * Constructor
@@ -75,11 +101,19 @@ public class GameOfLifeBoard extends Observable
 	}
 	
 	/**
-	 * Method to reset point list
+	 * Method which resets the game board by adding dead cells
 	 */
 	public void resetGameBoard()
-	{
-		cellList.clear();
+	{	
+		deadCellList.clear();
+		livingCellList.clear();
+		for(int y=0; y<=(int)this.getGameBoardSize().getHeight(); y++)
+		{
+			for(int x=0; x<=(int)this.getGameBoardSize().getHeight(); x++)
+			{	
+				deadCellList.add(new Point(x,y));			
+			}
+		}
 	}
 	
 	/**
@@ -88,7 +122,7 @@ public class GameOfLifeBoard extends Observable
 	 */
 	public void setGameBoardSize(Dimension newDimension)
 	{
-		this.cellList.clear();
+		//this.cellList.clear();
 		this.gameBoardSize = new Dimension((int)(newDimension.getWidth()/20-2),(int) (newDimension.getHeight()/20-2)); 
 	}
 
@@ -100,5 +134,4 @@ public class GameOfLifeBoard extends Observable
 	{
 		return gameBoardSize;
 	}
-
 }

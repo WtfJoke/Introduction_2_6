@@ -13,6 +13,7 @@ import javax.swing.JInternalFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
 
 /** 
  * Class which creates the views for Conways "Game of Life" children frames
@@ -31,6 +32,8 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 	private MVCGameOfLife mvcGOL;
 	private GameOfLifeBoard golBoard;
 	private GameOfLifeView golView;
+	public static Color tempLivingColor;
+	public static Color tempDeadColor;
 	
 	JMenuBar menuBar = new JMenuBar();
 	JMenu menuMode = new JMenu("Mode");
@@ -53,6 +56,24 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 	JMenuItem menuFigureGlider = new JMenuItem("Glider");
 	JMenuItem menuWindowSpaceship = new JMenuItem("Light-Weight Spaceship");
 	
+	JPopupMenu popup = new JPopupMenu();
+	JCheckBoxMenuItem livingCells = new JCheckBoxMenuItem("Living Cells");
+	JCheckBoxMenuItem deadCells = new JCheckBoxMenuItem("Dead Cells");
+	JMenuItem black = new JMenuItem("Black");
+	JMenuItem blue = new JMenuItem("Blue");
+	JMenuItem cyan = new JMenuItem("Cyan");
+	JMenuItem darkGray = new JMenuItem("Darkgray");
+	JMenuItem gray = new JMenuItem("Gray");
+	JMenuItem green = new JMenuItem("Green");
+	JMenuItem lightGray = new JMenuItem("Lightgray");
+	JMenuItem magenta = new JMenuItem("Magenta");
+	JMenuItem orange = new JMenuItem("Orange");
+	JMenuItem pink = new JMenuItem("Pink");
+	JMenuItem red = new JMenuItem("Red");
+	JMenuItem white = new JMenuItem("White");
+	JMenuItem yellow = new JMenuItem("Yellow");
+	
+	
 	//Dimension boardDimension = new Dimension(10, 10); Not necessary???
 	
 	/**
@@ -67,6 +88,14 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 		this.golBoard = golBoard;
 		this.golView = new GameOfLifeView(this.golBoard);
 		this.golBoard.addObserver(golView);
+		if(nr == 0)
+		{
+			this.golBoard.resetGameBoard();
+			golView.setLivingCellColor(Color.GREEN);
+			golView.setDeadCellColor(Color.RED);
+			tempLivingColor = Color.GREEN;
+			tempDeadColor = Color.RED;
+		}
 		createMenu();
 		cp = getContentPane();
 	    addMouseListener(this); 
@@ -107,7 +136,6 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 			{
 				menuModeSet.setSelected(true);
 				menuModePaint.setSelected(false);
-				golBoard.notifyObservers();
 			}
 		});
 		menuMode.add(menuModePaint);
@@ -121,7 +149,6 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 			{	
 				menuModePaint.setSelected(true);
 				menuModeSet.setSelected(false);
-				golBoard.notifyObservers();
 			}
 		});
 		menuMode.addSeparator();
@@ -134,8 +161,9 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 			public void actionPerformed(ActionEvent e) 
 			{
 				golBoard.resetGameBoard();
+				golView.updateGameBoardSize();	
 				golBoard.boardChanged();
-				golBoard.notifyObservers();
+				golBoard.notifyObservers();				
 			}		
 		});
 		menuBar.add(menuMode);
@@ -162,6 +190,298 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 				golBoard.notifyObservers();
 			}
 		});
+		popup.add(livingCells);
+		livingCells.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				livingCells.setSelected(true);
+				deadCells.setSelected(false);
+			}
+		});
+		popup.add(deadCells);
+		deadCells.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				livingCells.setSelected(false);
+				deadCells.setSelected(true);
+			}
+		});
+		popup.addSeparator();
+		popup.add(black);
+		black.addActionListener(new ActionListener()
+		{	
+			/**
+			 * Method which sets the color of the cells black
+			 * @param e Action event to be triggered (ActionEvent)
+			 */
+			public void actionPerformed(ActionEvent e)
+			{
+				if(livingCells.isSelected())
+				{	
+					golView.setLivingCellColor(Color.BLACK);
+					tempLivingColor = Color.BLACK;
+				}
+				else if(deadCells.isSelected())
+				{
+					golView.setDeadCellColor(Color.BLACK);
+					tempDeadColor = Color.BLACK;
+				}
+			}
+		});
+		popup.add(blue);
+		blue.addActionListener(new ActionListener()
+		{	
+			/**
+			 * Method which sets the color of the cells blue
+			 * @param e Action event to be triggered (ActionEvent)
+			 */
+			public void actionPerformed(ActionEvent e)
+			{
+				if(livingCells.isSelected())
+				{	
+					golView.setLivingCellColor(Color.BLUE);
+					tempLivingColor = Color.BLUE;
+				}
+				else if(deadCells.isSelected())
+				{	
+					golView.setDeadCellColor(Color.BLUE);
+					tempDeadColor = Color.BLUE;
+				}
+			}
+		});
+		popup.add(cyan);
+		cyan.addActionListener(new ActionListener()
+		{	
+			/**
+			 * Method which sets the color of the cells cyan
+			 * @param e Action event to be triggered (ActionEvent)
+			 */
+			public void actionPerformed(ActionEvent e)
+			{
+				if(livingCells.isSelected())
+				{
+					golView.setLivingCellColor(Color.CYAN);
+					tempLivingColor = Color.CYAN;
+				}
+				else if(deadCells.isSelected())
+				{
+					golView.setDeadCellColor(Color.CYAN);
+					tempDeadColor = Color.CYAN;
+				}
+			}
+		});
+		popup.add(darkGray);
+		darkGray.addActionListener(new ActionListener()
+		{	
+			/**
+			 * Method which sets the color of the cells dark gray
+			 * @param e Action event to be triggered (ActionEvent)
+			 */
+			public void actionPerformed(ActionEvent e)
+			{
+				if(livingCells.isSelected())
+				{
+					golView.setLivingCellColor(Color.DARK_GRAY);
+					tempLivingColor = Color.DARK_GRAY;
+				}
+				else if(deadCells.isSelected())
+				{
+					golView.setDeadCellColor(Color.DARK_GRAY);
+					tempDeadColor = Color.DARK_GRAY;
+				}
+			}
+		});
+		popup.add(gray);
+		gray.addActionListener(new ActionListener()
+		{	
+			/**
+			 * Method which sets the color of the cells gray
+			 * @param e Action event to be triggered (ActionEvent)
+			 */
+			public void actionPerformed(ActionEvent e)
+			{
+				if(livingCells.isSelected())
+				{
+					golView.setLivingCellColor(Color.GRAY);
+					tempLivingColor = Color.GRAY;
+				}
+				else if(deadCells.isSelected())
+				{
+					golView.setDeadCellColor(Color.GRAY);
+					tempDeadColor = Color.GRAY;
+				}
+			}
+		});
+		popup.add(green);
+		green.addActionListener(new ActionListener()
+		{	
+			/**
+			 * Method which sets the color of the cells green
+			 * @param e Action event to be triggered (ActionEvent)
+			 */
+			public void actionPerformed(ActionEvent e)
+			{
+				if(livingCells.isSelected())
+				{
+					golView.setLivingCellColor(Color.GREEN);
+					tempLivingColor = Color.GREEN;
+				}
+				else if(deadCells.isSelected())
+				{
+					golView.setDeadCellColor(Color.GREEN);
+					tempDeadColor = Color.GREEN;
+				}
+			}
+		});
+		popup.add(lightGray);
+		lightGray.addActionListener(new ActionListener()
+		{	
+			/**
+			 * Method which sets the color of the cells light gray
+			 * @param e Action event to be triggered (ActionEvent)
+			 */
+			public void actionPerformed(ActionEvent e)
+			{
+				if(livingCells.isSelected())
+				{
+					golView.setLivingCellColor(Color.LIGHT_GRAY);
+					tempLivingColor = Color.LIGHT_GRAY;
+				}
+				else if(deadCells.isSelected())
+				{
+					golView.setDeadCellColor(Color.LIGHT_GRAY);
+					tempDeadColor = Color.LIGHT_GRAY;
+				}
+			}
+		});
+		popup.add(magenta);
+		magenta.addActionListener(new ActionListener()
+		{	
+			/**
+			 * Method which sets the color of the cells magenta
+			 * @param e Action event to be triggered (ActionEvent)
+			 */
+			public void actionPerformed(ActionEvent e)
+			{
+				if(livingCells.isSelected())
+				{
+					golView.setLivingCellColor(Color.MAGENTA);
+					tempLivingColor = Color.MAGENTA;
+				}
+				else if(deadCells.isSelected())
+				{
+					golView.setDeadCellColor(Color.MAGENTA);
+					tempDeadColor = Color.MAGENTA;
+				}
+			}
+		});
+		popup.add(orange);
+		orange.addActionListener(new ActionListener()
+		{	
+			/**
+			 * Method which sets the color of the cells orange
+			 * @param e Action event to be triggered (ActionEvent)
+			 */
+			public void actionPerformed(ActionEvent e)
+			{
+				if(livingCells.isSelected())
+				{
+					golView.setLivingCellColor(Color.ORANGE);
+					tempLivingColor = Color.ORANGE;
+				}
+				else if(deadCells.isSelected())
+				{
+					golView.setDeadCellColor(Color.ORANGE);
+					tempDeadColor = Color.ORANGE;
+				}
+			}
+		});
+		popup.add(pink);
+		pink.addActionListener(new ActionListener()
+		{	
+			/**
+			 * Method which sets the color of the cells pink
+			 * @param e Action event to be triggered (ActionEvent)
+			 */
+			public void actionPerformed(ActionEvent e)
+			{
+				if(livingCells.isSelected())
+				{
+					golView.setLivingCellColor(Color.PINK);
+					tempLivingColor = Color.PINK;
+				}
+				else if(deadCells.isSelected())
+				{
+					golView.setDeadCellColor(Color.PINK);
+					tempDeadColor = Color.PINK;
+				}
+			}
+		});
+		popup.add(red);
+		red.addActionListener(new ActionListener()
+		{	
+			/**
+			 * Method which sets the color of the cells red
+			 * @param e Action event to be triggered (ActionEvent)
+			 */
+			public void actionPerformed(ActionEvent e)
+			{
+				if(livingCells.isSelected())
+				{
+					golView.setLivingCellColor(Color.RED);
+					tempLivingColor = Color.RED;
+				}
+				else if(deadCells.isSelected())
+				{
+					golView.setDeadCellColor(Color.RED);
+					tempDeadColor = Color.RED;
+				}
+			}
+		});
+		popup.add(white);
+		white.addActionListener(new ActionListener()
+		{	
+			/**
+			 * Method which sets the color of the cells white
+			 * @param e Action event to be triggered (ActionEvent)
+			 */
+			public void actionPerformed(ActionEvent e)
+			{
+				if(livingCells.isSelected())
+				{
+					golView.setLivingCellColor(Color.WHITE);
+					tempLivingColor = Color.WHITE;
+				}
+				else if(deadCells.isSelected())
+				{
+					golView.setDeadCellColor(Color.WHITE);
+					tempDeadColor = Color.WHITE;
+				}
+			}
+		});
+		popup.add(yellow);
+		yellow.addActionListener(new ActionListener()
+		{	
+			/**
+			 * Method which sets the color of the cells yellow
+			 * @param e Action event to be triggered (ActionEvent)
+			 */
+			public void actionPerformed(ActionEvent e)
+			{
+				if(livingCells.isSelected())
+				{
+					golView.setLivingCellColor(Color.YELLOW);
+					tempLivingColor = Color.YELLOW;
+				}
+				else if(deadCells.isSelected())
+				{
+					golView.setDeadCellColor(Color.YELLOW);
+					tempDeadColor = Color.YELLOW;
+				}
+			}
+		});
 	}
 	
 	/**
@@ -171,6 +491,38 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 	public void mouseReleased(MouseEvent e) 
 	{	
 		mouseIsDragging = false;
+		if(e.getButton() == MouseEvent.BUTTON3 && e.isPopupTrigger())
+		{
+			popup.show(e.getComponent(), e.getX(), e.getY());
+		}
+	}
+	
+	/**
+	 * Method which revives or kills a cell
+	 * @param e Mouse event to be triggered (MouseEvent)
+	 */
+	public void mouseClicked(MouseEvent e) 
+	{
+		if(menuModeSet.isSelected() && e.getButton() == MouseEvent.BUTTON1)
+		{
+			int x = e.getPoint().x/golView.BLOCK_SIZE-1;
+			int y = e.getPoint().y/golView.BLOCK_SIZE-4;
+	        if ((x >= 0) && (x < golBoard.getGameBoardSize().getWidth()) && (y >= 0) && (y < golBoard.getGameBoardSize().getHeight())) 
+	        {
+	        	if(golBoard.getDeadCellList().contains(new Point(x, y)))
+	        	{
+	        		golBoard.removeDeadCell(x,y);
+		        	golBoard.addLivingCell(x,y);
+	        	}
+	        	else if(golBoard.getLivingCellList().contains(new Point(x,y)))
+	        	{
+	        		golBoard.removeLivingCell(x,y);
+		        	golBoard.addDeadCell(x,y);
+	        	}
+	        }
+	        golBoard.boardChanged();
+	        golBoard.notifyObservers();
+		}
 	}
 	
 	/**
@@ -197,37 +549,15 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 	        int y = e.getPoint().y/golView.BLOCK_SIZE-4;
 	        if ((x >= 0) && (x < golBoard.getGameBoardSize().getWidth()) && (y >= 0) && (y < golBoard.getGameBoardSize().getHeight())) 
 	        {
-	        	golBoard.addCell(x,y);
+	        	if(golBoard.getDeadCellList().contains(new Point(x, y)))
+	        	{
+		        	golBoard.removeDeadCell(x,y);
+		        	golBoard.addLivingCell(x,y);
+	        	}
 	        }
 	        golBoard.boardChanged();
 	        golBoard.notifyObservers();
 	  	}	
-	}
-	
-	/**
-	 * Method which revives or kills a cell if clicked on it
-	 * @param e Mouse event to be triggered (MouseEvent)
-	 */
-	public void mouseClicked(MouseEvent e) 
-	{
-		if(menuModeSet.isSelected() && e.getButton() == MouseEvent.BUTTON1)
-		{
-			int x = e.getPoint().x/golView.BLOCK_SIZE-1;
-			int y = e.getPoint().y/golView.BLOCK_SIZE-4;
-	        if ((x >= 0) && (x < golBoard.getGameBoardSize().getWidth()) && (y >= 0) && (y < golBoard.getGameBoardSize().getHeight())) 
-	        {
-	        	if(golBoard.getCellList().contains(new Point(x, y)))
-	        	{
-		        	golBoard.removeCell(x, y);
-	        	}
-	        	else
-	        	{
-		        	golBoard.addCell(x,y);
-	        	}
-	        }
-	        golBoard.boardChanged();
-	        golBoard.notifyObservers();
-		}
 	}
 	
 	/**
