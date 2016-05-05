@@ -92,19 +92,28 @@ public class GameOfLifeBoard extends Observable
 	}
 	
 	/**
-	 * Method which resets the game board by adding dead cells
+	 * Method which setup the game board by adding dead cells
+	 */
+	public void setupGameBoard()
+	{	
+		deadCellList.clear();
+		livingCellList.clear();
+		for(int x = 0; x < this.getGameBoardSize().width; x++)
+		{
+			for(int y = 0; y < this.getGameBoardSize().height; y++)
+			{	
+				deadCellList.add(new Point(x,y));			
+			}
+		}
+	}
+	
+	/**
+	 * Method which reset the game board
 	 */
 	public void resetGameBoard()
 	{	
 		deadCellList.clear();
 		livingCellList.clear();
-		for(int y=0; y<=(int)this.getGameBoardSize().getHeight(); y++)
-		{
-			for(int x=0; x<=(int)this.getGameBoardSize().getHeight(); x++)
-			{	
-				deadCellList.add(new Point(x,y));			
-			}
-		}
 	}
 	
 	/**

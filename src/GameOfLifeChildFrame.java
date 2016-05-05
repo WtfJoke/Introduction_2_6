@@ -93,7 +93,7 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 		this.golBoard.addObserver(golView);
 		if(nr == 0)
 		{
-			this.golBoard.resetGameBoard();
+			this.golBoard.setupGameBoard();
 			golView.setLivingCellColor(Color.GREEN);
 			golView.setDeadCellColor(Color.RED);
 			tempLivingColor = Color.GREEN;
@@ -177,7 +177,7 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 		{
 			public void actionPerformed(ActionEvent e) 
 			{
-				golBoard.resetGameBoard();
+				golBoard.setupGameBoard();
 				golView.updateGameBoardSize();	
 				golBoard.boardChanged();
 				golBoard.notifyObservers();				
@@ -596,28 +596,28 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 	            {
 	                gameBoard[livingPoint.x][livingPoint.y] = true;	// 
 	            }
-	            for (int i = 0; i < gameBoard.length; i++) 
+	            for (int i = 0; i < boardWidth; i++) 
 	            {
-	                for (int j = 0; j < gameBoard[0].length; j++) 
+	                for (int j = 0; j < boardHeight; j++) 
 	                {
 	                    int surrounding = 0;
 	                    if(i - 1 < 0) // <- X * ?
 	                    {
 	                    	if(j - 1 < 0) // ? is additionally over the negative y border
 	                    	{
-	                        	if (gameBoard[gameBoard.length-1][gameBoard[0].length-1]) 	
+	                        	if (gameBoard[boardWidth-1][boardHeight-1]) 	
 			                    {							// ? * *
 			                    	surrounding++;			// * X *
 			                    }							// * * *
-			                    if (gameBoard[gameBoard.length-1][j])   
+			                    if (gameBoard[boardWidth-1][j])   
 			                    {							// * * *
 			                    	surrounding++;			// ? X *
 			                    }							// * * *
-			                    if (gameBoard[gameBoard.length-1][j+1]) 
+			                    if (gameBoard[boardWidth-1][j+1]) 
 			                    {							// * * *
 			                    	surrounding++;			// * X *
 			                    }							// ? * *
-			                    if (gameBoard[i][gameBoard[0].length-1])   
+			                    if (gameBoard[i][boardHeight-1])   
 			                    {							// * ? *
 			                    	surrounding++;			// * X *
 			                    }							// * * *
@@ -625,7 +625,7 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 			                    {							// * * *
 			                    	surrounding++;			// * X *
 			                    }							// * ? *
-			                    if (gameBoard[i+1][gameBoard[0].length-1]) 
+			                    if (gameBoard[i+1][boardHeight-1]) 
 			                    {							// * * ?
 			                    	surrounding++;			// * X *
 			                    }							// * * *
@@ -638,17 +638,17 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 			                    	surrounding++;			// * X *
 			                    }							// * * ?
 	                    	}
-	                    	else if(j + 1 > gameBoard[0].length-1) // ? is additionally over the positive y border  
+	                    	else if(j + 1 > boardHeight - 1) // ? is additionally over the positive y border  
 	                    	{
-	                    		if (gameBoard[gameBoard.length-1][j-1]) 	
+	                    		if (gameBoard[boardWidth-1][j-1]) 	
 			                    {							// ? * *
 			                    	surrounding++;			// * X *
 			                    }							// * * *
-			                    if (gameBoard[gameBoard.length-1][j])   
+			                    if (gameBoard[boardWidth-1][j])   
 			                    {							// * * *
 			                    	surrounding++;			// ? X *
 			                    }							// * * *
-			                    if (gameBoard[gameBoard.length-1][0]) 
+			                    if (gameBoard[boardWidth-1][0]) 
 			                    {							// * * *
 			                    	surrounding++;			// * X *
 			                    }							// ? * *
@@ -675,15 +675,15 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 	                    	}
 	                    	else // Only <- X * ?
 	                    	{
-	                        	if (gameBoard[gameBoard.length-1][j-1]) 	
+	                        	if (gameBoard[boardWidth-1][j-1]) 	
 			                    {							// ? * *
 			                    	surrounding++;			// * X *
 			                    }							// * * *
-			                    if (gameBoard[gameBoard.length-1][j])   
+			                    if (gameBoard[boardWidth-1][j])   
 			                    {							// * * *
 			                    	surrounding++;			// ? X *
 			                    }							// * * *
-			                    if (gameBoard[gameBoard.length-1][j+1]) 
+			                    if (gameBoard[boardWidth-1][j+1]) 
 			                    {							// * * *
 			                    	surrounding++;			// * X *
 			                    }							// ? * *
@@ -709,11 +709,11 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 			                    }							// * * ?
 	                    	}
 	                    }
-	                    else if(i + 1 > gameBoard.length-1) //  ? * X ->
+	                    else if(i + 1 > boardWidth - 1) //  ? * X ->
 	                    {
 	                    	if(j - 1 < 0) // ? is additionally over the negative y border  
 	                    	{
-	                        	if (gameBoard[i-1][gameBoard[0].length-1]) 	
+	                        	if (gameBoard[i-1][boardHeight-1]) 	
 			                    {							// ? * *
 			                    	surrounding++;			// * X *
 			                    }							// * * *
@@ -725,7 +725,7 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 			                    {							// * * *
 			                    	surrounding++;			// * X *
 			                    }							// ? * *
-			                    if (gameBoard[i][gameBoard[0].length-1])   
+			                    if (gameBoard[i][boardHeight-1])   
 			                    {							// * ? *
 			                    	surrounding++;			// * X *
 			                    }							// * * *
@@ -733,7 +733,7 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 			                    {							// * * *
 			                    	surrounding++;			// * X *
 			                    }							// * ? *
-			                    if (gameBoard[0][gameBoard[0].length-1]) 
+			                    if (gameBoard[0][boardHeight-1]) 
 			                    {							// * * ?
 			                    	surrounding++;			// * X *
 			                    }							// * * *
@@ -746,7 +746,7 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 			                    	surrounding++;			// * X *
 			                    }							// * * ?
 	                    	}
-	                    	else if(j + 1 > gameBoard[0].length-1) // ? is additionally over the positive y border  
+	                    	else if(j + 1 > boardHeight - 1) // ? is additionally over the positive y border  
 	                    	{
 	                    		if (gameBoard[i-1][j-1]) 	
 			                    {							// ? * *
@@ -782,7 +782,7 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 			                    }							// * * ?
 	                    	}
 	                    }
-	                    else if(j + 1 > gameBoard[0].length-1) // ? is over the positive y border 
+	                    else if(j + 1 > boardHeight - 1) // ? is over the positive y border 
 	                    {
 	                    	// ? is only over the positive y border 
 	                    	if (gameBoard[i-1][j-1]) 	
@@ -822,7 +822,7 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 	                    {
 	                    	if(j - 1 < 0) // ? is additionally over the negative y border  
 	                    	{
-	                        	if (gameBoard[i-1][gameBoard[0].length-1]) 	
+	                        	if (gameBoard[i-1][boardHeight-1]) 	
 			                    {							// ? * *
 			                    	surrounding++;			// * X *
 			                    }							// * * *
@@ -834,7 +834,7 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 			                    {							// * * *
 			                    	surrounding++;			// * X *
 			                    }							// ? * *
-			                    if (gameBoard[i][gameBoard[0].length-1])   
+			                    if (gameBoard[i][boardHeight-1])   
 			                    {							// * ? *
 			                    	surrounding++;			// * X *
 			                    }							// * * *
@@ -842,7 +842,7 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 			                    {							// * * *
 			                    	surrounding++;			// * X *
 			                    }							// * ? *
-			                    if (gameBoard[i+1][gameBoard[0].length-1]) 
+			                    if (gameBoard[i+1][boardHeight-1]) 
 			                    {							// * * ?
 			                    	surrounding++;			// * X *
 			                    }							// * * *
@@ -911,9 +911,9 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 	                }
 	            }
 	            golBoard.resetGameBoard(); // Reset board
-	            for (int x = 0; x < gameBoard.length; x++) 
+	            for (int x = 0; x < boardWidth; x++) 
 	            {
-	                for (int y = 0; y < gameBoard[0].length; y++) 
+	                for (int y = 0; y < boardHeight; y++) 
 	                {
 	                	if(survivingCells.contains(new Point(x, y)))
 	                	{
@@ -929,7 +929,7 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 		        golBoard.notifyObservers();
 	            try 
 	            {
-	                Thread.sleep(1000/movesPerSecond);
+	                Thread.sleep(2000);//movesPerSecond);
 	                run();
 	            } 
 	            catch(InterruptedException ex) 
