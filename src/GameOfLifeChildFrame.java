@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 import javax.swing.JCheckBoxMenuItem;
@@ -28,6 +29,8 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 	static int nr = - 1, xpos = 30, ypos = 30;
 	static final Color[] col = {Color.red, Color.green};
     private boolean mouseIsDragging = false;
+    private boolean startGame = false;
+    private int movesPerSecond = 1;
 	private Container cp = new Container();
 	private MVCGameOfLife mvcGOL;
 	private GameOfLifeBoard golBoard;
@@ -153,7 +156,21 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 		});
 		menuMode.addSeparator();
 		menuMode.add(menuModeRun);
+		menuModeRun.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e) 
+			{
+					startGame = true;
+			}		
+		});
 		menuMode.add(menuModeStop);
+		menuModeStop.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e) 
+			{
+					startGame = false;
+			}		
+		});
 		menuMode.addSeparator();
 		menuMode.add(menuModeReset);
 		menuModeReset.addActionListener(new ActionListener()
@@ -563,10 +580,372 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 	/**
 	 * Method which runs the game logic as a thread
 	 */
+	@Override
 	public void run()
 	{
-		//revalidate();
-		//repaint();
+		while(true)
+		{
+			if(startGame)
+			{
+				ArrayList<Point> survivingCells = new ArrayList<Point>(0);
+	            // Iterate through the array, follow game of life rules
+				int boardWidth = golBoard.getGameBoardSize().getSize().width;
+				int boardHeight = golBoard.getGameBoardSize().getSize().height;
+				boolean[][] gameBoard = new boolean[boardWidth][boardHeight];
+	            for (Point livingPoint : golBoard.getLivingCellList()) 
+	            {
+	                gameBoard[livingPoint.x][livingPoint.y] = true;	// 
+	            }
+	            for (int i = 0; i < gameBoard.length; i++) 
+	            {
+	                for (int j = 0; j < gameBoard[0].length; j++) 
+	                {
+	                    int surrounding = 0;
+	                    if(i - 1 < 0) // <- X * ?
+	                    {
+	                    	if(j - 1 < 0) // ? is additionally over the negative y border
+	                    	{
+	                        	if (gameBoard[gameBoard.length-1][gameBoard[0].length-1]) 	
+			                    {							// ? * *
+			                    	surrounding++;			// * X *
+			                    }							// * * *
+			                    if (gameBoard[gameBoard.length-1][j])   
+			                    {							// * * *
+			                    	surrounding++;			// ? X *
+			                    }							// * * *
+			                    if (gameBoard[gameBoard.length-1][j+1]) 
+			                    {							// * * *
+			                    	surrounding++;			// * X *
+			                    }							// ? * *
+			                    if (gameBoard[i][gameBoard[0].length-1])   
+			                    {							// * ? *
+			                    	surrounding++;			// * X *
+			                    }							// * * *
+			                    if (gameBoard[i][j+1])   
+			                    {							// * * *
+			                    	surrounding++;			// * X *
+			                    }							// * ? *
+			                    if (gameBoard[i+1][gameBoard[0].length-1]) 
+			                    {							// * * ?
+			                    	surrounding++;			// * X *
+			                    }							// * * *
+			                    if (gameBoard[i+1][j])   
+			                    {							// * * *
+			                    	surrounding++;			// * X ?
+			                    }							// * * *
+			                    if (gameBoard[i+1][j+1]) 
+			                    {							// * * *
+			                    	surrounding++;			// * X *
+			                    }							// * * ?
+	                    	}
+	                    	else if(j + 1 > gameBoard[0].length-1) // ? is additionally over the positive y border  
+	                    	{
+	                    		if (gameBoard[gameBoard.length-1][j-1]) 	
+			                    {							// ? * *
+			                    	surrounding++;			// * X *
+			                    }							// * * *
+			                    if (gameBoard[gameBoard.length-1][j])   
+			                    {							// * * *
+			                    	surrounding++;			// ? X *
+			                    }							// * * *
+			                    if (gameBoard[gameBoard.length-1][0]) 
+			                    {							// * * *
+			                    	surrounding++;			// * X *
+			                    }							// ? * *
+			                    if (gameBoard[i][j-1])   
+			                    {							// * ? *
+			                    	surrounding++;			// * X *
+			                    }							// * * *
+			                    if (gameBoard[i][0])   
+			                    {							// * * *
+			                    	surrounding++;			// * X *
+			                    }							// * ? *
+			                    if (gameBoard[i+1][j-1]) 
+			                    {							// * * ?
+			                    	surrounding++;			// * X *
+			                    }							// * * *
+			                    if (gameBoard[i+1][j])   
+			                    {							// * * *
+			                    	surrounding++;			// * X ?
+			                    }							// * * *
+			                    if (gameBoard[i+1][0]) 
+			                    {							// * * *
+			                    	surrounding++;			// * X *
+			                    }			
+	                    	}
+	                    	else // Only <- X * ?
+	                    	{
+	                        	if (gameBoard[gameBoard.length-1][j-1]) 	
+			                    {							// ? * *
+			                    	surrounding++;			// * X *
+			                    }							// * * *
+			                    if (gameBoard[gameBoard.length-1][j])   
+			                    {							// * * *
+			                    	surrounding++;			// ? X *
+			                    }							// * * *
+			                    if (gameBoard[gameBoard.length-1][j+1]) 
+			                    {							// * * *
+			                    	surrounding++;			// * X *
+			                    }							// ? * *
+			                    if (gameBoard[i][j-1])   
+			                    {							// * ? *
+			                    	surrounding++;			// * X *
+			                    }							// * * *
+			                    if (gameBoard[i][j+1])   
+			                    {							// * * *
+			                    	surrounding++;			// * X *
+			                    }							// * ? *
+			                    if (gameBoard[i+1][j-1]) 
+			                    {							// * * ?
+			                    	surrounding++;			// * X *
+			                    }							// * * *
+			                    if (gameBoard[i+1][j])   
+			                    {							// * * *
+			                    	surrounding++;			// * X ?
+			                    }							// * * *
+			                    if (gameBoard[i+1][j+1]) 
+			                    {							// * * *
+			                    	surrounding++;			// * X *
+			                    }							// * * ?
+	                    	}
+	                    }
+	                    else if(i + 1 > gameBoard.length-1) //  ? * X ->
+	                    {
+	                    	if(j - 1 < 0) // ? is additionally over the negative y border  
+	                    	{
+	                        	if (gameBoard[i-1][gameBoard[0].length-1]) 	
+			                    {							// ? * *
+			                    	surrounding++;			// * X *
+			                    }							// * * *
+			                    if (gameBoard[i-1][j])   
+			                    {							// * * *
+			                    	surrounding++;			// ? X *
+			                    }							// * * *
+			                    if (gameBoard[i-1][j+1]) 
+			                    {							// * * *
+			                    	surrounding++;			// * X *
+			                    }							// ? * *
+			                    if (gameBoard[i][gameBoard[0].length-1])   
+			                    {							// * ? *
+			                    	surrounding++;			// * X *
+			                    }							// * * *
+			                    if (gameBoard[i][j+1])   
+			                    {							// * * *
+			                    	surrounding++;			// * X *
+			                    }							// * ? *
+			                    if (gameBoard[0][gameBoard[0].length-1]) 
+			                    {							// * * ?
+			                    	surrounding++;			// * X *
+			                    }							// * * *
+			                    if (gameBoard[0][j])   
+			                    {							// * * *
+			                    	surrounding++;			// * X ?
+			                    }							// * * *
+			                    if (gameBoard[0][j+1]) 
+			                    {							// * * *
+			                    	surrounding++;			// * X *
+			                    }							// * * ?
+	                    	}
+	                    	else if(j + 1 > gameBoard[0].length-1) // ? is additionally over the positive y border  
+	                    	{
+	                    		if (gameBoard[i-1][j-1]) 	
+			                    {							// ? * *
+			                    	surrounding++;			// * X *
+			                    }							// * * *
+			                    if (gameBoard[i-1][j])   
+			                    {							// * * *
+			                    	surrounding++;			// ? X *
+			                    }							// * * *
+			                    if (gameBoard[i-1][0]) 
+			                    {							// * * *
+			                    	surrounding++;			// * X *
+			                    }							// ? * *
+			                    if (gameBoard[i][j-1])   
+			                    {							// * ? *
+			                    	surrounding++;			// * X *
+			                    }							// * * *
+			                    if (gameBoard[i][0])   
+			                    {							// * * *
+			                    	surrounding++;			// * X *
+			                    }							// * ? *
+			                    if (gameBoard[0][j-1]) 
+			                    {							// * * ?
+			                    	surrounding++;			// * X *
+			                    }							// * * *
+			                    if (gameBoard[0][j])   
+			                    {							// * * *
+			                    	surrounding++;			// * X ?
+			                    }							// * * *
+			                    if (gameBoard[0][0]) 
+			                    {							// * * *
+			                    	surrounding++;			// * X *
+			                    }							// * * ?
+	                    	}
+	                    }
+	                    else if(j + 1 > gameBoard[0].length-1) // ? is over the positive y border 
+	                    {
+	                    	// ? is only over the positive y border 
+	                    	if (gameBoard[i-1][j-1]) 	
+		                    {							// ? * *
+		                    	surrounding++;			// * X *
+		                    }							// * * *
+		                    if (gameBoard[i-1][j])   
+		                    {							// * * *
+		                    	surrounding++;			// ? X *
+		                    }							// * * *
+		                    if (gameBoard[i-1][0]) 
+		                    {							// * * *
+		                    	surrounding++;			// * X *
+		                    }							// ? * *
+		                    if (gameBoard[i][j-1])   
+		                    {							// * ? *
+		                    	surrounding++;			// * X *
+		                    }							// * * *
+		                    if (gameBoard[i][0])   
+		                    {							// * * *
+		                    	surrounding++;			// * X *
+		                    }							// * ? *
+		                    if (gameBoard[i+1][j-1]) 
+		                    {							// * * ?
+		                    	surrounding++;			// * X *
+		                    }							// * * *
+		                    if (gameBoard[i+1][j])   
+		                    {							// * * *
+		                    	surrounding++;			// * X ?
+		                    }							// * * *
+		                    if (gameBoard[i+1][0]) 
+		                    {							// * * *
+		                    	surrounding++;			// * X *
+		                    }							// * * ?
+	                    }
+	                    else
+	                    {
+	                    	if(j - 1 < 0) // ? is additionally over the negative y border  
+	                    	{
+	                        	if (gameBoard[i-1][gameBoard[0].length-1]) 	
+			                    {							// ? * *
+			                    	surrounding++;			// * X *
+			                    }							// * * *
+			                    if (gameBoard[i-1][j])   
+			                    {							// * * *
+			                    	surrounding++;			// ? X *
+			                    }							// * * *
+			                    if (gameBoard[i-1][j+1]) 
+			                    {							// * * *
+			                    	surrounding++;			// * X *
+			                    }							// ? * *
+			                    if (gameBoard[i][gameBoard[0].length-1])   
+			                    {							// * ? *
+			                    	surrounding++;			// * X *
+			                    }							// * * *
+			                    if (gameBoard[i][j+1])   
+			                    {							// * * *
+			                    	surrounding++;			// * X *
+			                    }							// * ? *
+			                    if (gameBoard[i+1][gameBoard[0].length-1]) 
+			                    {							// * * ?
+			                    	surrounding++;			// * X *
+			                    }							// * * *
+			                    if (gameBoard[i+1][j])   
+			                    {							// * * *
+			                    	surrounding++;			// * X ?
+			                    }							// * * *
+			                    if (gameBoard[i+1][j+1]) 
+			                    {							// * * *
+			                    	surrounding++;			// * X *
+			                    }							// * * ?
+	                    	}
+	                    	else // ? is not crossing any border
+	                    	{
+		                    	if (gameBoard[i-1][j-1]) 	
+			                    {							// ? * *
+			                    	surrounding++;			// * X *
+			                    }							// * * *
+			                    if (gameBoard[i-1][j])   
+			                    {							// * * *
+			                    	surrounding++;			// ? X *
+			                    }							// * * *
+			                    if (gameBoard[i-1][j+1]) 
+			                    {							// * * *
+			                    	surrounding++;			// * X *
+			                    }							// ? * *
+			                    if (gameBoard[i][j-1])   
+			                    {							// * ? *
+			                    	surrounding++;			// * X *
+			                    }							// * * *
+			                    if (gameBoard[i][j+1])   
+			                    {							// * * *
+			                    	surrounding++;			// * X *
+			                    }							// * ? *
+			                    if (gameBoard[i+1][j-1]) 
+			                    {							// * * ?
+			                    	surrounding++;			// * X *
+			                    }							// * * *
+			                    if (gameBoard[i+1][j])   
+			                    {							// * * *
+			                    	surrounding++;			// * X ?
+			                    }							// * * *
+			                    if (gameBoard[i+1][j+1]) 
+			                    {							// * * *
+			                    	surrounding++;			// * X *
+			                    }							// * * ?
+	                    	}
+	                    }
+	                    // Check now surrounding counter
+	                    if (gameBoard[i][j]) 
+	                    {
+	                        // Cell is alive, can the cell survive? (2-3)
+	                        if ((surrounding == 2) || (surrounding >= 3)) 
+	                        {
+	                            survivingCells.add(new Point(i,j)); 
+	                        }
+	                    } 
+	                    else 
+	                    {
+	                        // Cell is dead, will the cell be reborn? (3)
+	                        if (surrounding >= 3)
+	                        {
+	                            survivingCells.add(new Point(i,j));
+	                        }
+	                    }
+	                }
+	            }
+	            golBoard.resetGameBoard(); // Reset board
+	            for (int x = 0; x < gameBoard.length; x++) 
+	            {
+	                for (int y = 0; y < gameBoard[0].length; y++) 
+	                {
+	                	if(survivingCells.contains(new Point(x, y)))
+	                	{
+	                		golBoard.addLivingCell(x,y);
+	                	}
+	                	else
+	                	{
+	                		golBoard.addDeadCell(x,y);
+	                	}
+	                }
+	            }
+	            golBoard.boardChanged();
+		        golBoard.notifyObservers();
+	            try 
+	            {
+	                Thread.sleep(1000/movesPerSecond);
+	                run();
+	            } 
+	            catch(InterruptedException ex) 
+	            {}
+			}
+			else
+			{
+	            try 
+	            {
+	                Thread.sleep(1000/movesPerSecond);
+	                run();
+	            } 
+	            catch(InterruptedException ex) 
+	            {}
+			}	
+		}
 	}
 	
 	// Unused events

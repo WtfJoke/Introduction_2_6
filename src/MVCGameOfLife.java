@@ -54,6 +54,7 @@ public class MVCGameOfLife extends JApplet
 		MVCGameOfLife gameOfLife = new MVCGameOfLife();
 		GameOfLifeChildFrame golChildFrame = new GameOfLifeChildFrame(gameOfLife, gameOfLife.gol);
 		gameOfLife.addChild(golChildFrame, 10, 10);
+		// Create and start Thread
 		Thread gameOfLifeThread = new Thread(golChildFrame);
 		gameOfLifeThread.start();
 		Konsole.run(gameOfLife, 512, 512);

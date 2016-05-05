@@ -82,13 +82,13 @@ public class GameOfLifeView extends JPanel implements Observer
                 // Draw new point
                 g.setColor(GameOfLifeChildFrame.tempLivingColor);
                 g.fillRect(BLOCK_SIZE + (BLOCK_SIZE*newPoint.x), BLOCK_SIZE + (BLOCK_SIZE*newPoint.y), BLOCK_SIZE, BLOCK_SIZE);
-                repaint();
+                //repaint();
             }
             for(Point newPoint : gol.getDeadCellList())
             {
             	g.setColor(GameOfLifeChildFrame.tempDeadColor);
                 g.fillRect(BLOCK_SIZE + (BLOCK_SIZE*newPoint.x), BLOCK_SIZE + (BLOCK_SIZE*newPoint.y), BLOCK_SIZE, BLOCK_SIZE);
-                repaint();
+                //repaint();
             }
         } 
         catch (ConcurrentModificationException cme) {}

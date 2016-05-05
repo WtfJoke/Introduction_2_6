@@ -83,15 +83,6 @@ public class GameOfLifeBoard extends Observable
 	}
 
 	/**
-	 * Setter for cellList
-	 * @param cellList the cellList to set
-	 */
-	/*public void setCellList(ArrayList<Point> cellList) 
-	{
-		this.cellList = cellList;
-	}*/
-
-	/**
 	 * Constructor
 	 * @param gameBoardSize
 	 */
