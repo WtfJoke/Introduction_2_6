@@ -596,20 +596,21 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 	            {
 	                gameBoard[livingPoint.x][livingPoint.y] = true;	// 
 	            }
+	            int surrounding = 0;
 	            for (int i = 0; i < boardWidth; i++) 
 	            {
 	                for (int j = 0; j < boardHeight; j++) 
 	                {
-	                    int surrounding = 0;
-	                    if(i - 1 < 0) // <- X * ?
+	                    surrounding = 0;
+	                    if(i - 1 < 0) // <- X * ? 	// 1. Start
 	                    {
 	                    	if(j - 1 < 0) // ? is additionally over the negative y border
 	                    	{
-	                        	if (gameBoard[boardWidth-1][boardHeight-1]) 	
+	                        	if(gameBoard[boardWidth-1][boardHeight-1]) 	
 			                    {							// ? * *
 			                    	surrounding++;			// * X *
 			                    }							// * * *
-			                    if (gameBoard[boardWidth-1][j])   
+			                    if (gameBoard[boardWidth-1][j])
 			                    {							// * * *
 			                    	surrounding++;			// ? X *
 			                    }							// * * *
@@ -708,12 +709,12 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 			                    	surrounding++;			// * X *
 			                    }							// * * ?
 	                    	}
-	                    }
-	                    else if(i + 1 > boardWidth - 1) //  ? * X ->
+	                    } // 1. End
+	                    else if(i + 1 > boardWidth - 1) //  ? * X -> 	// 2. Start
 	                    {
 	                    	if(j - 1 < 0) // ? is additionally over the negative y border  
 	                    	{
-	                        	if (gameBoard[i-1][boardHeight-1]) 	
+	                        	if (gameBoard[i-1][boardHeight-1])
 			                    {							// ? * *
 			                    	surrounding++;			// * X *
 			                    }							// * * *
@@ -781,8 +782,43 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 			                    	surrounding++;			// * X *
 			                    }							// * * ?
 	                    	}
-	                    }
-	                    else if(j + 1 > boardHeight - 1) // ? is over the positive y border 
+	                    	else
+	                    	{
+	                    		if (gameBoard[i-1][j-1]) 	
+			                    {							// ? * *
+			                    	surrounding++;			// * X *
+			                    }							// * * *
+			                    if (gameBoard[i-1][j])   
+			                    {							// * * *
+			                    	surrounding++;			// ? X *
+			                    }							// * * *
+			                    if (gameBoard[i-1][j+1]) 
+			                    {							// * * *
+			                    	surrounding++;			// * X *
+			                    }							// ? * *
+			                    if (gameBoard[i][j-1])   
+			                    {							// * ? *
+			                    	surrounding++;			// * X *
+			                    }							// * * *
+			                    if (gameBoard[i][j+1])   
+			                    {							// * * *
+			                    	surrounding++;			// * X *
+			                    }							// * ? *
+			                    if (gameBoard[0][j-1]) 
+			                    {							// * * ?
+			                    	surrounding++;			// * X *
+			                    }							// * * *
+			                    if (gameBoard[0][j])   
+			                    {							// * * *
+			                    	surrounding++;			// * X ?
+			                    }							// * * *
+			                    if (gameBoard[0][j+1]) 
+			                    {							// * * *
+			                    	surrounding++;			// * X *
+			                    }							// * * ?
+	                    	}
+	                    } // 2. End
+	                    else if(j + 1 > boardHeight - 1) // ? is over the positive y border 	// 3. Start
 	                    {
 	                    	// ? is only over the positive y border 
 	                    	if (gameBoard[i-1][j-1]) 	
@@ -817,82 +853,79 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 		                    {							// * * *
 		                    	surrounding++;			// * X *
 		                    }							// * * ?
-	                    }
-	                    else
+	                    } // 3. End
+	                    else if(j - 1 < 0) // ? is over the negative y border  // 4. Start
 	                    {
-	                    	if(j - 1 < 0) // ? is additionally over the negative y border  
-	                    	{
-	                        	if (gameBoard[i-1][boardHeight-1]) 	
-			                    {							// ? * *
-			                    	surrounding++;			// * X *
-			                    }							// * * *
-			                    if (gameBoard[i-1][j])   
-			                    {							// * * *
-			                    	surrounding++;			// ? X *
-			                    }							// * * *
-			                    if (gameBoard[i-1][j+1]) 
-			                    {							// * * *
-			                    	surrounding++;			// * X *
-			                    }							// ? * *
-			                    if (gameBoard[i][boardHeight-1])   
-			                    {							// * ? *
-			                    	surrounding++;			// * X *
-			                    }							// * * *
-			                    if (gameBoard[i][j+1])   
-			                    {							// * * *
-			                    	surrounding++;			// * X *
-			                    }							// * ? *
-			                    if (gameBoard[i+1][boardHeight-1]) 
-			                    {							// * * ?
-			                    	surrounding++;			// * X *
-			                    }							// * * *
-			                    if (gameBoard[i+1][j])   
-			                    {							// * * *
-			                    	surrounding++;			// * X ?
-			                    }							// * * *
-			                    if (gameBoard[i+1][j+1]) 
-			                    {							// * * *
-			                    	surrounding++;			// * X *
-			                    }							// * * ?
-	                    	}
-	                    	else // ? is not crossing any border
-	                    	{
-		                    	if (gameBoard[i-1][j-1]) 	
-			                    {							// ? * *
-			                    	surrounding++;			// * X *
-			                    }							// * * *
-			                    if (gameBoard[i-1][j])   
-			                    {							// * * *
-			                    	surrounding++;			// ? X *
-			                    }							// * * *
-			                    if (gameBoard[i-1][j+1]) 
-			                    {							// * * *
-			                    	surrounding++;			// * X *
-			                    }							// ? * *
-			                    if (gameBoard[i][j-1])   
-			                    {							// * ? *
-			                    	surrounding++;			// * X *
-			                    }							// * * *
-			                    if (gameBoard[i][j+1])   
-			                    {							// * * *
-			                    	surrounding++;			// * X *
-			                    }							// * ? *
-			                    if (gameBoard[i+1][j-1]) 
-			                    {							// * * ?
-			                    	surrounding++;			// * X *
-			                    }							// * * *
-			                    if (gameBoard[i+1][j])   
-			                    {							// * * *
-			                    	surrounding++;			// * X ?
-			                    }							// * * *
-			                    if (gameBoard[i+1][j+1]) 
-			                    {							// * * *
-			                    	surrounding++;			// * X *
-			                    }							// * * ?
-	                    	}
-	                    }
+                        	if (gameBoard[i-1][boardHeight-1]) 	
+		                    {							// ? * *
+		                    	surrounding++;			// * X *
+		                    }							// * * *
+		                    if (gameBoard[i-1][j])   
+		                    {							// * * *
+		                    	surrounding++;			// ? X *
+		                    }							// * * *
+		                    if (gameBoard[i-1][j+1]) 
+		                    {							// * * *
+		                    	surrounding++;			// * X *
+		                    }							// ? * *
+		                    if (gameBoard[i][boardHeight-1])   
+		                    {							// * ? *
+		                    	surrounding++;			// * X *
+		                    }							// * * *
+		                    if (gameBoard[i][j+1])   
+		                    {							// * * *
+		                    	surrounding++;			// * X *
+		                    }							// * ? *
+		                    if (gameBoard[i+1][boardHeight-1]) 
+		                    {							// * * ?
+		                    	surrounding++;			// * X *
+		                    }							// * * *
+		                    if (gameBoard[i+1][j])   
+		                    {							// * * *
+		                    	surrounding++;			// * X ?
+		                    }							// * * *
+		                    if (gameBoard[i+1][j+1]) 
+		                    {							// * * *
+		                    	surrounding++;			// * X *
+		                    }							// * * ?
+	                    } // 4. End
+	                    else // ? is not crossing any border	// 5. Start
+                    	{
+	                    	if (gameBoard[i-1][j-1]) 	
+		                    {							// ? * *
+		                    	surrounding++;			// * X *
+		                    }							// * * *
+		                    if (gameBoard[i-1][j])   
+		                    {							// * * *
+		                    	surrounding++;			// ? X *
+		                    }							// * * *
+		                    if (gameBoard[i-1][j+1]) 
+		                    {							// * * *
+		                    	surrounding++;			// * X *
+		                    }							// ? * *
+		                    if (gameBoard[i][j-1])   
+		                    {							// * ? *
+		                    	surrounding++;			// * X *
+		                    }							// * * *
+		                    if (gameBoard[i][j+1])   
+		                    {							// * * *
+		                    	surrounding++;			// * X *
+		                    }							// * ? *
+		                    if (gameBoard[i+1][j-1]) 
+		                    {							// * * ?
+		                    	surrounding++;			// * X *
+		                    }							// * * *
+		                    if (gameBoard[i+1][j])   
+		                    {							// * * *
+		                    	surrounding++;			// * X ?
+		                    }							// * * *
+		                    if (gameBoard[i+1][j+1]) 
+		                    {							// * * *
+		                    	surrounding++;			// * X *
+		                    }							// * * ?
+                    	} // 5. End
 	                    // Check now surrounding counter
-	                    if (gameBoard[i][j]) 
+	                    if (gameBoard[i][j])
 	                    {
 	                        // Cell is alive, can the cell survive? (2-3)
 	                        if ((surrounding == 2) || (surrounding >= 3)) 
