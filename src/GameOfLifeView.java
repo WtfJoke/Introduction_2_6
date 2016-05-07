@@ -17,8 +17,8 @@ import javax.swing.JPanel;
 public class GameOfLifeView extends JPanel implements Observer
 {
 	private static final long serialVersionUID = 1L;
-	public Color livingCellColor;
-	public Color deadCellColor;
+	private Color livingCellColor = Color.GREEN;;
+	private Color deadCellColor = Color.RED;
 	public final int BLOCK_SIZE = 20;
 	private GameOfLifeBoard gol;
 	
@@ -26,7 +26,7 @@ public class GameOfLifeView extends JPanel implements Observer
 	 * Constructor
 	 * @param gol GameOfLife Reference
 	 */
-	public GameOfLifeView(GameOfLifeBoard gol) 
+	public GameOfLifeView(GameOfLifeBoard gol)
 	{
 		this.gol = gol;
 	}
@@ -39,6 +39,7 @@ public class GameOfLifeView extends JPanel implements Observer
 	public void update(Observable o, Object arg) 
 	{
 		// Update board size?
+		revalidate();
 		repaint();
 	}
 	
@@ -65,7 +66,7 @@ public class GameOfLifeView extends JPanel implements Observer
 		}
 		gol.getDeadCellList().removeAll(removeDeadCellList);
 		gol.getLivingCellList().removeAll(removeLivingCellList);
-		repaint();
+		//repaint();
 	}
 	
 	/**
@@ -76,21 +77,23 @@ public class GameOfLifeView extends JPanel implements Observer
 	{     
 		super.paintComponent(g);
         try 
-        {
-            for (Point newPoint : gol.getLivingCellList()) 
+        {	
+        	for (Point newPoint : gol.getLivingCellList()) 
             {
-                // Draw new point
-                g.setColor(GameOfLifeChildFrame.tempLivingColor);
+        		// Draw new point
+                g.setColor(livingCellColor);
                 g.fillRect(BLOCK_SIZE + (BLOCK_SIZE*newPoint.x), BLOCK_SIZE + (BLOCK_SIZE*newPoint.y), BLOCK_SIZE, BLOCK_SIZE);
-                //repaint();
+                gol.hasChanged();
+                gol.notifyObservers();
             }
             for(Point newPoint : gol.getDeadCellList())
             {
-            	g.setColor(GameOfLifeChildFrame.tempDeadColor);
+                g.setColor(deadCellColor);
                 g.fillRect(BLOCK_SIZE + (BLOCK_SIZE*newPoint.x), BLOCK_SIZE + (BLOCK_SIZE*newPoint.y), BLOCK_SIZE, BLOCK_SIZE);
-                //repaint();
-            }
-        } 
+                gol.hasChanged();
+                gol.notifyObservers();
+            } 	
+        }
         catch (ConcurrentModificationException cme) {}
         // Setup grid
         g.setColor(Color.BLACK);
@@ -105,31 +108,23 @@ public class GameOfLifeView extends JPanel implements Observer
         }
 	}
 	
-	/**
-	 * Setter for living cell color
-	 * @param livingCell the livingCell to set
-	 */
-	public void setLivingCellColor(Color livingCellColor) 
+	public void setLivingCellColor(Color newColor)
 	{
-		this.livingCellColor = livingCellColor;
-	}
-
-	/**
-	 * Setter for dead cell color
-	 * @param deadCell the deadCell to set
-	 */
-	public void setDeadCellColor(Color deadCellColor) 
-	{
-		this.deadCellColor = deadCellColor;
+		this.livingCellColor = newColor;
 	}
 	
-	public Color getDeadCellColor()
+	public void setDeadCellColor(Color newColor)
 	{
-		return deadCellColor;
+		this.deadCellColor = newColor;
 	}
 	
 	public Color getLivingCellColor()
 	{
 		return livingCellColor;
+	}
+	
+	public Color getDeadCellColor()
+	{
+		return deadCellColor;
 	}
 }

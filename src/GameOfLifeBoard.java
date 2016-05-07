@@ -123,7 +123,7 @@ public class GameOfLifeBoard extends Observable
 	public void setGameBoardSize(Dimension newDimension)
 	{
 		//this.cellList.clear();
-		this.gameBoardSize = new Dimension((int)(newDimension.getWidth()/20-2),(int) (newDimension.getHeight()/20-2)); 
+		this.gameBoardSize = new Dimension((int)(newDimension.getWidth()),(int) (newDimension.getHeight())); 
 	}
 
 	/**

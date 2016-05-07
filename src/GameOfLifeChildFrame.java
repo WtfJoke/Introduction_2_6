@@ -1,5 +1,6 @@
 import java.awt.Color;
 import java.awt.Container;
+import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -24,34 +25,35 @@ import javax.swing.JPopupMenu;
  * @author Viet Cuong Nguyen, 191515
  */
 public class GameOfLifeChildFrame extends JInternalFrame implements MouseListener, MouseMotionListener, Observer, Runnable
-{
+{	
+	//Private and public members
 	private static final long serialVersionUID = 1L;
-	static int nr = - 1, xpos = 30, ypos = 30;
+	public static int childNr = 1, xpos = 30, ypos = 30;
+	public static int gameNr = 0;
 	static final Color[] col = {Color.red, Color.green};
     private boolean mouseIsDragging = false;
     private boolean startGame = false;
     private int movesPerSecond = 1;
+    private int sleepTime = 2000;
 	private Container cp = new Container();
 	private MVCGameOfLife mvcGOL;
 	private GameOfLifeBoard golBoard;
 	private GameOfLifeView golView;
-	public static Color tempLivingColor;
-	public static Color tempDeadColor;
 	
 	JMenuBar menuBar = new JMenuBar();
 	JMenu menuMode = new JMenu("Mode");
 	JCheckBoxMenuItem menuModeSet = new JCheckBoxMenuItem("Set");
 	JCheckBoxMenuItem menuModePaint = new JCheckBoxMenuItem("Paint");
 	JMenuItem menuModeRun = new JMenuItem("Run");
-	JMenuItem menuModeStop = new JMenuItem("Stop");
+	JMenuItem menuModeStop = new JMenuItem("Pause");
 	JMenuItem menuModeReset = new JMenuItem("Reset");
 	
 	JMenu menuVelocity = new JMenu("Velocity");
-	JMenuItem menuVelocityFaster = new JMenuItem("Faster");
-	JMenuItem menuVelocitySlower = new JMenuItem("Slower");
+	JMenuItem menuVelocityFaster = new JMenuItem("Faster (2x)");
+	JMenuItem menuVelocitySlower = new JMenuItem("Slower (0.5x)");
 	
 	JMenu menuWindow = new JMenu("Window");
-	JMenuItem menuWindowNew = new JMenuItem("New");
+	JMenuItem menuWindowNew = new JMenuItem("New View");
 	JMenuItem menuWindowResize = new JMenuItem("Resize");
 	JMenuItem menuWindowAlignment = new JMenuItem("Change Alignment");
 	
@@ -85,19 +87,25 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 	 * @param golBoard GameOfLife reference
 	 */
 	public GameOfLifeChildFrame(MVCGameOfLife mvcGOL, GameOfLifeBoard golBoard) 
-	{
-		super("Game of Life " + (++nr), true, true);
+	{	
+		super("Game of Life " + (gameNr) + " - " + (childNr), true, true);
+		this.setSize(250,330);
 		this.mvcGOL = mvcGOL;
 		this.golBoard = golBoard;
 		this.golView = new GameOfLifeView(this.golBoard);
 		this.golBoard.addObserver(golView);
-		if(nr == 0)
+		if(childNr == 1 && MVCGameOfLife.isNewGame)
 		{
 			this.golBoard.setupGameBoard();
-			golView.setLivingCellColor(Color.GREEN);
-			golView.setDeadCellColor(Color.RED);
-			tempLivingColor = Color.GREEN;
-			tempDeadColor = Color.RED;
+			this.golView.setLivingCellColor(Color.GREEN);
+			this.golView.setDeadCellColor(Color.RED);
+			//this.golBoard.hasChanged();
+			//this.golBoard.notifyObservers();
+		}
+		else
+		{
+			this.golView.setLivingCellColor(golView.getLivingCellColor());
+			this.golView.setDeadCellColor(golView.getDeadCellColor());
 		}
 		createMenu();
 		cp = getContentPane();
@@ -157,39 +165,90 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 		menuMode.addSeparator();
 		menuMode.add(menuModeRun);
 		menuModeRun.addActionListener(new ActionListener()
-		{
+		{	
+			/**
+			 * Method which runs the game
+			 * @param e Action event to be triggered (ActionEvent)
+			 */
 			public void actionPerformed(ActionEvent e) 
 			{
-					startGame = true;
+				startGame = true;
 			}		
 		});
 		menuMode.add(menuModeStop);
 		menuModeStop.addActionListener(new ActionListener()
-		{
+		{	
+			/**
+			 * Method which pauses the game
+			 * @param e Action event to be triggered (ActionEvent)
+			 */
 			public void actionPerformed(ActionEvent e) 
 			{
-					startGame = false;
+				startGame = false;
 			}		
 		});
 		menuMode.addSeparator();
 		menuMode.add(menuModeReset);
 		menuModeReset.addActionListener(new ActionListener()
-		{
+		{	
+			/**
+			 * Method which resets the board by adding dead cells to it
+			 * @param e Action event to be triggered (ActionEvent)
+			 */
 			public void actionPerformed(ActionEvent e) 
 			{
 				golBoard.setupGameBoard();
 				golView.updateGameBoardSize();	
 				golBoard.boardChanged();
-				golBoard.notifyObservers();				
+				golBoard.notifyObservers(golView);				
 			}		
 		});
 		menuBar.add(menuMode);
 		menuVelocity.add(menuVelocityFaster);
+		menuVelocityFaster.addActionListener(new ActionListener() 
+		{
+			/**
+			 * Method which makes the game speed run twice as fast
+			 * @param e Action event to be triggered (ActionEvent)
+			 */
+			public void actionPerformed(ActionEvent e) 
+			{	
+				sleepTime = sleepTime/2;
+			}
+		});
 		menuVelocity.add(menuVelocitySlower);
+		menuVelocitySlower.addActionListener(new ActionListener() 
+		{
+			/**
+			 * Method which reduces the game speed by half
+			 * @param e Action event to be triggered (ActionEvent)
+			 */
+			public void actionPerformed(ActionEvent e) 
+			{	
+				sleepTime = sleepTime*2;
+			}
+		});
 		menuBar.add(menuVelocity);
 		menuWindow.add(menuWindowNew);
 		menuWindow.add(menuWindowResize);
 		menuWindow.add(menuWindowAlignment);
+		menuWindowAlignment.addActionListener(new ActionListener() 
+		{
+			/**
+			 * Method which creates a new view of the model by creating a new child frame 
+			 * and by changing the alignment of the board
+			 * @param e Action event to be triggered (ActionEvent)
+			 */
+			public void actionPerformed(ActionEvent e) 
+			{	
+				MVCGameOfLife.isNewGame = false;
+				++childNr;
+				golBoard.setGameBoardSize(new Dimension(golBoard.getGameBoardSize().height, golBoard.getGameBoardSize().width)); 
+				mvcGOL.addChild(new GameOfLifeChildFrame(mvcGOL, golBoard), 20, 20);	
+				golBoard.boardChanged();
+				golBoard.notifyObservers();
+			}
+		});
 		menuBar.add(menuWindow);
 		menuFigure.add(menuFigureGlider);
 		menuFigure.add(menuWindowSpaceship);
@@ -203,8 +262,9 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 			 */
 			public void actionPerformed(ActionEvent e) 
 			{	
+				MVCGameOfLife.isNewGame = false;
+				++childNr;
 				mvcGOL.addChild(new GameOfLifeChildFrame(mvcGOL, golBoard), 20, 20);
-				golBoard.notifyObservers();
 			}
 		});
 		popup.add(livingCells);
@@ -237,13 +297,13 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 			{
 				if(livingCells.isSelected())
 				{	
-					golView.setLivingCellColor(Color.BLACK);
-					tempLivingColor = Color.BLACK;
+					golView.setLivingCellColor(Color.BLACK);	
+					repaint();
 				}
 				else if(deadCells.isSelected())
-				{
-					golView.setDeadCellColor(Color.BLACK);
-					tempDeadColor = Color.BLACK;
+				{	
+					golView.setDeadCellColor(Color.BLACK);	
+					repaint();
 				}
 			}
 		});
@@ -258,13 +318,13 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 			{
 				if(livingCells.isSelected())
 				{	
-					golView.setLivingCellColor(Color.BLUE);
-					tempLivingColor = Color.BLUE;
+					golView.setLivingCellColor(Color.BLUE);	
+					repaint();
 				}
 				else if(deadCells.isSelected())
 				{	
-					golView.setDeadCellColor(Color.BLUE);
-					tempDeadColor = Color.BLUE;
+					golView.setDeadCellColor(Color.BLUE);	
+					repaint();
 				}
 			}
 		});
@@ -278,14 +338,14 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 			public void actionPerformed(ActionEvent e)
 			{
 				if(livingCells.isSelected())
-				{
-					golView.setLivingCellColor(Color.CYAN);
-					tempLivingColor = Color.CYAN;
+				{	
+					golView.setLivingCellColor(Color.CYAN);	
+					repaint();
 				}
 				else if(deadCells.isSelected())
-				{
-					golView.setDeadCellColor(Color.CYAN);
-					tempDeadColor = Color.CYAN;
+				{	
+					golView.setDeadCellColor(Color.CYAN);	
+					repaint();
 				}
 			}
 		});
@@ -299,14 +359,14 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 			public void actionPerformed(ActionEvent e)
 			{
 				if(livingCells.isSelected())
-				{
-					golView.setLivingCellColor(Color.DARK_GRAY);
-					tempLivingColor = Color.DARK_GRAY;
+				{	
+					golView.setLivingCellColor(Color.DARK_GRAY);	
+					repaint();
 				}
 				else if(deadCells.isSelected())
-				{
-					golView.setDeadCellColor(Color.DARK_GRAY);
-					tempDeadColor = Color.DARK_GRAY;
+				{	
+					golView.setDeadCellColor(Color.DARK_GRAY);	
+					repaint();
 				}
 			}
 		});
@@ -320,14 +380,14 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 			public void actionPerformed(ActionEvent e)
 			{
 				if(livingCells.isSelected())
-				{
-					golView.setLivingCellColor(Color.GRAY);
-					tempLivingColor = Color.GRAY;
+				{	
+					golView.setLivingCellColor(Color.GRAY);	
+					repaint();
 				}
 				else if(deadCells.isSelected())
-				{
-					golView.setDeadCellColor(Color.GRAY);
-					tempDeadColor = Color.GRAY;
+				{	
+					golView.setDeadCellColor(Color.GRAY);	
+					repaint();
 				}
 			}
 		});
@@ -341,14 +401,14 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 			public void actionPerformed(ActionEvent e)
 			{
 				if(livingCells.isSelected())
-				{
-					golView.setLivingCellColor(Color.GREEN);
-					tempLivingColor = Color.GREEN;
+				{	
+					golView.setLivingCellColor(Color.GREEN);	
+					repaint();
 				}
 				else if(deadCells.isSelected())
-				{
-					golView.setDeadCellColor(Color.GREEN);
-					tempDeadColor = Color.GREEN;
+				{	
+					golView.setDeadCellColor(Color.GREEN);	
+					repaint();
 				}
 			}
 		});
@@ -362,14 +422,14 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 			public void actionPerformed(ActionEvent e)
 			{
 				if(livingCells.isSelected())
-				{
-					golView.setLivingCellColor(Color.LIGHT_GRAY);
-					tempLivingColor = Color.LIGHT_GRAY;
+				{	
+					golView.setLivingCellColor(Color.LIGHT_GRAY);	
+					repaint();
 				}
 				else if(deadCells.isSelected())
-				{
-					golView.setDeadCellColor(Color.LIGHT_GRAY);
-					tempDeadColor = Color.LIGHT_GRAY;
+				{	
+					golView.setDeadCellColor(Color.LIGHT_GRAY);	
+					repaint();
 				}
 			}
 		});
@@ -383,14 +443,14 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 			public void actionPerformed(ActionEvent e)
 			{
 				if(livingCells.isSelected())
-				{
-					golView.setLivingCellColor(Color.MAGENTA);
-					tempLivingColor = Color.MAGENTA;
+				{	
+					golView.setLivingCellColor(Color.MAGENTA);	
+					repaint();
 				}
 				else if(deadCells.isSelected())
-				{
-					golView.setDeadCellColor(Color.MAGENTA);
-					tempDeadColor = Color.MAGENTA;
+				{	
+					golView.setDeadCellColor(Color.MAGENTA);	
+					repaint();
 				}
 			}
 		});
@@ -404,14 +464,14 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 			public void actionPerformed(ActionEvent e)
 			{
 				if(livingCells.isSelected())
-				{
-					golView.setLivingCellColor(Color.ORANGE);
-					tempLivingColor = Color.ORANGE;
+				{	
+					golView.setLivingCellColor(Color.ORANGE);	
+					repaint();
 				}
 				else if(deadCells.isSelected())
-				{
-					golView.setDeadCellColor(Color.ORANGE);
-					tempDeadColor = Color.ORANGE;
+				{	
+					golView.setDeadCellColor(Color.ORANGE);	
+					repaint();
 				}
 			}
 		});
@@ -425,14 +485,14 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 			public void actionPerformed(ActionEvent e)
 			{
 				if(livingCells.isSelected())
-				{
-					golView.setLivingCellColor(Color.PINK);
-					tempLivingColor = Color.PINK;
+				{	
+					golView.setLivingCellColor(Color.PINK);	
+					repaint();
 				}
 				else if(deadCells.isSelected())
-				{
-					golView.setDeadCellColor(Color.PINK);
-					tempDeadColor = Color.PINK;
+				{	
+					golView.setDeadCellColor(Color.PINK);	
+					repaint();
 				}
 			}
 		});
@@ -446,14 +506,14 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 			public void actionPerformed(ActionEvent e)
 			{
 				if(livingCells.isSelected())
-				{
-					golView.setLivingCellColor(Color.RED);
-					tempLivingColor = Color.RED;
+				{	
+					golView.setLivingCellColor(Color.RED);	
+					repaint();
 				}
 				else if(deadCells.isSelected())
-				{
-					golView.setDeadCellColor(Color.RED);
-					tempDeadColor = Color.RED;
+				{	
+					golView.setDeadCellColor(Color.RED);	
+					repaint();
 				}
 			}
 		});
@@ -467,14 +527,14 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 			public void actionPerformed(ActionEvent e)
 			{
 				if(livingCells.isSelected())
-				{
-					golView.setLivingCellColor(Color.WHITE);
-					tempLivingColor = Color.WHITE;
+				{	
+					golView.setLivingCellColor(Color.WHITE);	
+					repaint();
 				}
 				else if(deadCells.isSelected())
-				{
-					golView.setDeadCellColor(Color.WHITE);
-					tempDeadColor = Color.WHITE;
+				{	
+					golView.setDeadCellColor(Color.WHITE);	
+					repaint();
 				}
 			}
 		});
@@ -488,14 +548,14 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 			public void actionPerformed(ActionEvent e)
 			{
 				if(livingCells.isSelected())
-				{
-					golView.setLivingCellColor(Color.YELLOW);
-					tempLivingColor = Color.YELLOW;
+				{	
+					golView.setLivingCellColor(Color.YELLOW);	
+					repaint();
 				}
 				else if(deadCells.isSelected())
-				{
-					golView.setDeadCellColor(Color.YELLOW);
-					tempDeadColor = Color.YELLOW;
+				{	
+					golView.setDeadCellColor(Color.YELLOW);	
+					repaint();
 				}
 			}
 		});
@@ -596,21 +656,20 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 	            {
 	                gameBoard[livingPoint.x][livingPoint.y] = true;	// 
 	            }
-	            int surrounding = 0;
 	            for (int i = 0; i < boardWidth; i++) 
 	            {
 	                for (int j = 0; j < boardHeight; j++) 
 	                {
-	                    surrounding = 0;
-	                    if(i - 1 < 0) // <- X * ? 	// 1. Start
+	                    int surrounding = 0;
+	                    if(i - 1 < 0) // <- X * ?
 	                    {
 	                    	if(j - 1 < 0) // ? is additionally over the negative y border
 	                    	{
-	                        	if(gameBoard[boardWidth-1][boardHeight-1]) 	
+	                        	if (gameBoard[boardWidth-1][boardHeight-1]) 	
 			                    {							// ? * *
 			                    	surrounding++;			// * X *
 			                    }							// * * *
-			                    if (gameBoard[boardWidth-1][j])
+			                    if (gameBoard[boardWidth-1][j])   
 			                    {							// * * *
 			                    	surrounding++;			// ? X *
 			                    }							// * * *
@@ -672,7 +731,7 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 			                    if (gameBoard[i+1][0]) 
 			                    {							// * * *
 			                    	surrounding++;			// * X *
-			                    }			
+			                    }							// * * ?
 	                    	}
 	                    	else // Only <- X * ?
 	                    	{
@@ -709,12 +768,12 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 			                    	surrounding++;			// * X *
 			                    }							// * * ?
 	                    	}
-	                    } // 1. End
-	                    else if(i + 1 > boardWidth - 1) //  ? * X -> 	// 2. Start
+	                    }
+	                    else if(i + 1 > boardWidth - 1) //  ? * X ->
 	                    {
 	                    	if(j - 1 < 0) // ? is additionally over the negative y border  
 	                    	{
-	                        	if (gameBoard[i-1][boardHeight-1])
+	                        	if (gameBoard[i-1][boardHeight-1]) 	
 			                    {							// ? * *
 			                    	surrounding++;			// * X *
 			                    }							// * * *
@@ -782,7 +841,7 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 			                    	surrounding++;			// * X *
 			                    }							// * * ?
 	                    	}
-	                    	else
+	                    	else // Only X -> * ?
 	                    	{
 	                    		if (gameBoard[i-1][j-1]) 	
 			                    {							// ? * *
@@ -817,8 +876,8 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 			                    	surrounding++;			// * X *
 			                    }							// * * ?
 	                    	}
-	                    } // 2. End
-	                    else if(j + 1 > boardHeight - 1) // ? is over the positive y border 	// 3. Start
+	                    }
+	                    else if(j + 1 > boardHeight - 1) // ? is over the positive y border 
 	                    {
 	                    	// ? is only over the positive y border 
 	                    	if (gameBoard[i-1][j-1]) 	
@@ -853,10 +912,10 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 		                    {							// * * *
 		                    	surrounding++;			// * X *
 		                    }							// * * ?
-	                    } // 3. End
-	                    else if(j - 1 < 0) // ? is over the negative y border  // 4. Start
-	                    {
-                        	if (gameBoard[i-1][boardHeight-1]) 	
+	                    }
+	                    else if(j - 1 < 0)  // ? is additionally over the negative y border  
+	                    {	
+	                    	if (gameBoard[i-1][boardHeight-1]) 	
 		                    {							// ? * *
 		                    	surrounding++;			// * X *
 		                    }							// * * *
@@ -888,8 +947,8 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 		                    {							// * * *
 		                    	surrounding++;			// * X *
 		                    }							// * * ?
-	                    } // 4. End
-	                    else // ? is not crossing any border	// 5. Start
+	                    }
+	                    else // ? is not crossing any border
                     	{
 	                    	if (gameBoard[i-1][j-1]) 	
 		                    {							// ? * *
@@ -923,12 +982,12 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 		                    {							// * * *
 		                    	surrounding++;			// * X *
 		                    }							// * * ?
-                    	} // 5. End
+                    	}
 	                    // Check now surrounding counter
-	                    if (gameBoard[i][j])
+	                    if (gameBoard[i][j]) 
 	                    {
 	                        // Cell is alive, can the cell survive? (2-3)
-	                        if ((surrounding == 2) || (surrounding >= 3)) 
+	                        if ((surrounding == 2) && (surrounding <= 3)) 
 	                        {
 	                            survivingCells.add(new Point(i,j)); 
 	                        }
@@ -936,11 +995,12 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 	                    else 
 	                    {
 	                        // Cell is dead, will the cell be reborn? (3)
-	                        if (surrounding >= 3)
+	                        if (surrounding == 3)
 	                        {
 	                            survivingCells.add(new Point(i,j));
 	                        }
 	                    }
+	                    surrounding = 0;
 	                }
 	            }
 	            golBoard.resetGameBoard(); // Reset board
@@ -960,9 +1020,13 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 	            }
 	            golBoard.boardChanged();
 		        golBoard.notifyObservers();
+		        if(golBoard.getLivingCellList().isEmpty())
+		        {
+		        	startGame = false;
+		        }
 	            try 
 	            {
-	                Thread.sleep(2000);//movesPerSecond);
+	                Thread.sleep(sleepTime);//movesPerSecond);
 	                run();
 	            } 
 	            catch(InterruptedException ex) 
