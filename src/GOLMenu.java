@@ -50,10 +50,8 @@ public class GOLMenu extends JInternalFrame
 		{
 			public void actionPerformed(ActionEvent e)
 			{	
-				++GameOfLifeChildFrame.gameNr;
-				GameOfLifeChildFrame.childNr = 1;
 				MVCGameOfLife.isNewGame = true;
-				MVCGameOfLife.createNewGame();		
+				MVCGameOfLife.createNewGame();
 			}
 		}
 		);

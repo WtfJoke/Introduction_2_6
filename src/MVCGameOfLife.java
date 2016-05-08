@@ -1,5 +1,4 @@
 import java.awt.Dimension;
-import java.util.ArrayList;
 import javax.swing.DefaultDesktopManager;
 import javax.swing.JApplet;
 import javax.swing.JDesktopPane;
@@ -19,8 +18,6 @@ public class MVCGameOfLife extends JApplet
 	private JDesktopPane desk;
 	public static GameOfLifeBoard newGolBoard;
 	public static MVCGameOfLife gameOfLife = new MVCGameOfLife();
-	public static ArrayList<GameOfLifeChildFrame> amountOfGames = new ArrayList<GameOfLifeChildFrame>(0);
-	public static ArrayList<GameOfLifeView> amountOfViews = new ArrayList<GameOfLifeView>(0);
 	public static boolean isNewGame = false;
     
 	/**
@@ -55,7 +52,8 @@ public class MVCGameOfLife extends JApplet
 	 * Method which allows to create multiple independent games
 	 */
 	public static void createNewGame()
-	{			
+	{	
+		GameOfLifeChildFrame.gameNr++;
 		newGolBoard = new GameOfLifeBoard(new Dimension(Integer.parseInt(GOLMenu.rowNumber.getText()), Integer.parseInt(GOLMenu.columnNumber.getText())));	
 		GameOfLifeChildFrame golChildFrame = new GameOfLifeChildFrame(gameOfLife, MVCGameOfLife.newGolBoard);
 		gameOfLife.addChild(golChildFrame, 30, 30);

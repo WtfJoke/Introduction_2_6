@@ -17,8 +17,8 @@ import javax.swing.JPanel;
 public class GameOfLifeView extends JPanel implements Observer
 {
 	private static final long serialVersionUID = 1L;
-	private Color livingCellColor = Color.GREEN;;
-	private Color deadCellColor = Color.RED;
+	public Color deadView;
+	public Color livingView;
 	public final int BLOCK_SIZE = 20;
 	private GameOfLifeBoard gol;
 	
@@ -79,20 +79,20 @@ public class GameOfLifeView extends JPanel implements Observer
         try 
         {	
         	for (Point newPoint : gol.getLivingCellList()) 
-            {
+            {	
         		// Draw new point
-                g.setColor(livingCellColor);
+                g.setColor(livingView);
                 g.fillRect(BLOCK_SIZE + (BLOCK_SIZE*newPoint.x), BLOCK_SIZE + (BLOCK_SIZE*newPoint.y), BLOCK_SIZE, BLOCK_SIZE);
                 gol.hasChanged();
                 gol.notifyObservers();
             }
             for(Point newPoint : gol.getDeadCellList())
-            {
-                g.setColor(deadCellColor);
+            {	
+                g.setColor(deadView);
                 g.fillRect(BLOCK_SIZE + (BLOCK_SIZE*newPoint.x), BLOCK_SIZE + (BLOCK_SIZE*newPoint.y), BLOCK_SIZE, BLOCK_SIZE);
                 gol.hasChanged();
                 gol.notifyObservers();
-            } 	
+            }
         }
         catch (ConcurrentModificationException cme) {}
         // Setup grid
@@ -106,25 +106,5 @@ public class GameOfLifeView extends JPanel implements Observer
         {
             g.drawLine(BLOCK_SIZE, ((i*BLOCK_SIZE)+BLOCK_SIZE), BLOCK_SIZE*((int)gol.getGameBoardSize().getWidth()+1), ((i*BLOCK_SIZE)+BLOCK_SIZE));
         }
-	}
-	
-	public void setLivingCellColor(Color newColor)
-	{
-		this.livingCellColor = newColor;
-	}
-	
-	public void setDeadCellColor(Color newColor)
-	{
-		this.deadCellColor = newColor;
-	}
-	
-	public Color getLivingCellColor()
-	{
-		return livingCellColor;
-	}
-	
-	public Color getDeadCellColor()
-	{
-		return deadCellColor;
 	}
 }

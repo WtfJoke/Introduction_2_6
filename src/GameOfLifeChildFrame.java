@@ -28,8 +28,9 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 {	
 	//Private and public members
 	private static final long serialVersionUID = 1L;
-	public static int childNr = 1, xpos = 30, ypos = 30;
-	public static int gameNr = 0;
+	public static int gameNr = 0, xpos = 30, ypos = 30;
+	private static Color livingCellColor;
+	private static Color deadCellColor;
 	static final Color[] col = {Color.red, Color.green};
     private boolean mouseIsDragging = false;
     private boolean startGame = false;
@@ -88,24 +89,27 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 	 */
 	public GameOfLifeChildFrame(MVCGameOfLife mvcGOL, GameOfLifeBoard golBoard) 
 	{	
-		super("Game of Life " + (gameNr) + " - " + (childNr), true, true);
+		super("Game of Life " + (gameNr) + " - View", true, true);
 		this.setSize(250,330);
 		this.mvcGOL = mvcGOL;
 		this.golBoard = golBoard;
 		this.golView = new GameOfLifeView(this.golBoard);
 		this.golBoard.addObserver(golView);
-		if(childNr == 1 && MVCGameOfLife.isNewGame)
+		if(MVCGameOfLife.isNewGame)
 		{
 			this.golBoard.setupGameBoard();
-			this.golView.setLivingCellColor(Color.GREEN);
-			this.golView.setDeadCellColor(Color.RED);
+			this.golView.deadView = Color.RED;
+			this.golView.livingView = Color.GREEN;
+			livingCellColor = Color.GREEN;
+			deadCellColor = Color.RED;
+			MVCGameOfLife.isNewGame = false;
 			//this.golBoard.hasChanged();
 			//this.golBoard.notifyObservers();
 		}
 		else
 		{
-			this.golView.setLivingCellColor(golView.getLivingCellColor());
-			this.golView.setDeadCellColor(golView.getDeadCellColor());
+			this.golView.livingView = livingCellColor;
+			this.golView.deadView = deadCellColor;
 		}
 		createMenu();
 		cp = getContentPane();
@@ -242,11 +246,8 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 			public void actionPerformed(ActionEvent e) 
 			{	
 				MVCGameOfLife.isNewGame = false;
-				++childNr;
 				golBoard.setGameBoardSize(new Dimension(golBoard.getGameBoardSize().height, golBoard.getGameBoardSize().width)); 
 				mvcGOL.addChild(new GameOfLifeChildFrame(mvcGOL, golBoard), 20, 20);	
-				golBoard.boardChanged();
-				golBoard.notifyObservers();
 			}
 		});
 		menuBar.add(menuWindow);
@@ -262,9 +263,10 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 			 */
 			public void actionPerformed(ActionEvent e) 
 			{	
-				MVCGameOfLife.isNewGame = false;
-				++childNr;
-				mvcGOL.addChild(new GameOfLifeChildFrame(mvcGOL, golBoard), 20, 20);
+				GameOfLifeChildFrame golChild = new GameOfLifeChildFrame(mvcGOL, golBoard);
+				mvcGOL.addChild(golChild, 20, 20);
+				Thread gameOfLifeThread = new Thread(golChild);
+				gameOfLifeThread.start();
 			}
 		});
 		popup.add(livingCells);
@@ -297,13 +299,15 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 			{
 				if(livingCells.isSelected())
 				{	
-					golView.setLivingCellColor(Color.BLACK);	
-					repaint();
+					golView.livingView = Color.BLACK;
+					livingCellColor = Color.BLACK;
+	                repaint();
 				}
 				else if(deadCells.isSelected())
 				{	
-					golView.setDeadCellColor(Color.BLACK);	
-					repaint();
+					golView.deadView = Color.BLACK;
+					deadCellColor = Color.BLACK;
+	                repaint();
 				}
 			}
 		});
@@ -318,12 +322,14 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 			{
 				if(livingCells.isSelected())
 				{	
-					golView.setLivingCellColor(Color.BLUE);	
+					golView.livingView = Color.BLUE;
+					livingCellColor = Color.BLUE;
 					repaint();
 				}
 				else if(deadCells.isSelected())
 				{	
-					golView.setDeadCellColor(Color.BLUE);	
+					golView.deadView = Color.BLUE;
+					deadCellColor = Color.BLUE;
 					repaint();
 				}
 			}
@@ -339,13 +345,15 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 			{
 				if(livingCells.isSelected())
 				{	
-					golView.setLivingCellColor(Color.CYAN);	
-					repaint();
+					golView.livingView = Color.CYAN;
+					livingCellColor = Color.CYAN;
+	                repaint();
 				}
 				else if(deadCells.isSelected())
 				{	
-					golView.setDeadCellColor(Color.CYAN);	
-					repaint();
+					golView.deadView = Color.CYAN;
+					deadCellColor = Color.CYAN;
+	                repaint();
 				}
 			}
 		});
@@ -360,13 +368,15 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 			{
 				if(livingCells.isSelected())
 				{	
-					golView.setLivingCellColor(Color.DARK_GRAY);	
-					repaint();
+					golView.livingView = Color.DARK_GRAY;
+					livingCellColor = Color.DARK_GRAY;
+	                repaint();
 				}
 				else if(deadCells.isSelected())
 				{	
-					golView.setDeadCellColor(Color.DARK_GRAY);	
-					repaint();
+					golView.deadView = Color.DARK_GRAY;
+					deadCellColor = Color.DARK_GRAY;
+	                repaint();
 				}
 			}
 		});
@@ -381,13 +391,15 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 			{
 				if(livingCells.isSelected())
 				{	
-					golView.setLivingCellColor(Color.GRAY);	
-					repaint();
+					golView.livingView = Color.GRAY;
+					livingCellColor = Color.GRAY;
+	                repaint();
 				}
 				else if(deadCells.isSelected())
 				{	
-					golView.setDeadCellColor(Color.GRAY);	
-					repaint();
+					golView.deadView = Color.GRAY;
+					deadCellColor = Color.GRAY;
+	                repaint();
 				}
 			}
 		});
@@ -402,13 +414,15 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 			{
 				if(livingCells.isSelected())
 				{	
-					golView.setLivingCellColor(Color.GREEN);	
-					repaint();
+					golView.livingView = Color.GREEN;
+					livingCellColor = Color.GREEN;
+	                repaint();
 				}
 				else if(deadCells.isSelected())
 				{	
-					golView.setDeadCellColor(Color.GREEN);	
-					repaint();
+					golView.deadView = Color.GREEN;
+					deadCellColor = Color.GREEN;
+	                repaint();
 				}
 			}
 		});
@@ -423,13 +437,15 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 			{
 				if(livingCells.isSelected())
 				{	
-					golView.setLivingCellColor(Color.LIGHT_GRAY);	
-					repaint();
+					golView.livingView = Color.LIGHT_GRAY;
+					livingCellColor = Color.LIGHT_GRAY;
+	                repaint();
 				}
 				else if(deadCells.isSelected())
 				{	
-					golView.setDeadCellColor(Color.LIGHT_GRAY);	
-					repaint();
+					golView.deadView = Color.LIGHT_GRAY;
+					deadCellColor = Color.LIGHT_GRAY;
+	                repaint();
 				}
 			}
 		});
@@ -444,13 +460,15 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 			{
 				if(livingCells.isSelected())
 				{	
-					golView.setLivingCellColor(Color.MAGENTA);	
-					repaint();
+					golView.livingView = Color.MAGENTA;
+					livingCellColor = Color.MAGENTA;
+	                repaint();
 				}
 				else if(deadCells.isSelected())
 				{	
-					golView.setDeadCellColor(Color.MAGENTA);	
-					repaint();
+					golView.deadView = Color.MAGENTA;
+					deadCellColor = Color.MAGENTA;
+	                repaint();
 				}
 			}
 		});
@@ -465,13 +483,15 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 			{
 				if(livingCells.isSelected())
 				{	
-					golView.setLivingCellColor(Color.ORANGE);	
-					repaint();
+					golView.livingView = Color.ORANGE;
+					livingCellColor = Color.ORANGE;
+	                repaint();
 				}
 				else if(deadCells.isSelected())
 				{	
-					golView.setDeadCellColor(Color.ORANGE);	
-					repaint();
+					golView.deadView = Color.ORANGE;
+					deadCellColor = Color.ORANGE;
+	                repaint();
 				}
 			}
 		});
@@ -486,13 +506,15 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 			{
 				if(livingCells.isSelected())
 				{	
-					golView.setLivingCellColor(Color.PINK);	
-					repaint();
+					golView.livingView = Color.PINK;
+					livingCellColor = Color.PINK;
+	                repaint();
 				}
 				else if(deadCells.isSelected())
 				{	
-					golView.setDeadCellColor(Color.PINK);	
-					repaint();
+					golView.deadView = Color.PINK;
+					deadCellColor = Color.PINK;
+	                repaint();
 				}
 			}
 		});
@@ -507,13 +529,15 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 			{
 				if(livingCells.isSelected())
 				{	
-					golView.setLivingCellColor(Color.RED);	
-					repaint();
+					golView.livingView = Color.RED;
+					livingCellColor = Color.RED;
+	                repaint();
 				}
 				else if(deadCells.isSelected())
 				{	
-					golView.setDeadCellColor(Color.RED);	
-					repaint();
+					golView.deadView = Color.RED;
+					deadCellColor = Color.RED;
+	                repaint();
 				}
 			}
 		});
@@ -528,13 +552,15 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 			{
 				if(livingCells.isSelected())
 				{	
-					golView.setLivingCellColor(Color.WHITE);	
-					repaint();
+					golView.livingView = Color.WHITE;
+					livingCellColor = Color.WHITE;
+	                repaint();
 				}
 				else if(deadCells.isSelected())
 				{	
-					golView.setDeadCellColor(Color.WHITE);	
-					repaint();
+					golView.deadView = Color.WHITE;
+					deadCellColor = Color.WHITE;
+	                repaint();
 				}
 			}
 		});
@@ -549,13 +575,15 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 			{
 				if(livingCells.isSelected())
 				{	
-					golView.setLivingCellColor(Color.YELLOW);	
-					repaint();
+					golView.livingView = Color.YELLOW;
+					livingCellColor = Color.YELLOW;
+	                repaint();
 				}
 				else if(deadCells.isSelected())
 				{	
-					golView.setDeadCellColor(Color.YELLOW);	
-					repaint();
+					golView.deadView = Color.YELLOW;
+					deadCellColor = Color.YELLOW;
+	                repaint();
 				}
 			}
 		});
