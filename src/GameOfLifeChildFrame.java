@@ -34,7 +34,6 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 	static final Color[] col = {Color.red, Color.green};
     private boolean mouseIsDragging = false;
     private boolean startGame = false;
-    private int movesPerSecond = 1;
     private int sleepTime = 2000;
 	private Container cp = new Container();
 	private MVCGameOfLife mvcGOL;
@@ -217,7 +216,7 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 			 */
 			public void actionPerformed(ActionEvent e) 
 			{	
-				sleepTime = sleepTime/2;
+				sleepTime = 1000;
 			}
 		});
 		menuVelocity.add(menuVelocitySlower);
@@ -229,7 +228,7 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 			 */
 			public void actionPerformed(ActionEvent e) 
 			{	
-				sleepTime = sleepTime*2;
+				sleepTime = 4000;
 			}
 		});
 		menuBar.add(menuVelocity);
@@ -610,8 +609,8 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 	{
 		if(menuModeSet.isSelected() && e.getButton() == MouseEvent.BUTTON1)
 		{
-			int x = e.getPoint().x/golView.BLOCK_SIZE-1;
-			int y = e.getPoint().y/golView.BLOCK_SIZE-4;
+			int x = e.getPoint().x/golView.getBlockSize()-1;
+			int y = e.getPoint().y/golView.getBlockSize()-4;
 	        if ((x >= 0) && (x < golBoard.getGameBoardSize().getWidth()) && (y >= 0) && (y < golBoard.getGameBoardSize().getHeight())) 
 	        {
 	        	if(golBoard.getDeadCellList().contains(new Point(x, y)))
@@ -650,8 +649,8 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 	{
 		if(mouseIsDragging && menuModePaint.isSelected())
 		{
-			int x = e.getPoint().x/golView.BLOCK_SIZE-1;
-	        int y = e.getPoint().y/golView.BLOCK_SIZE-4;
+			int x = e.getPoint().x/golView.getBlockSize()-1;
+	        int y = e.getPoint().y/golView.getBlockSize()-4;
 	        if ((x >= 0) && (x < golBoard.getGameBoardSize().getWidth()) && (y >= 0) && (y < golBoard.getGameBoardSize().getHeight())) 
 	        {
 	        	if(golBoard.getDeadCellList().contains(new Point(x, y)))
@@ -684,11 +683,12 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 	            {
 	                gameBoard[livingPoint.x][livingPoint.y] = true;	// 
 	            }
+	            int surrounding = 0;
 	            for (int i = 0; i < boardWidth; i++) 
 	            {
 	                for (int j = 0; j < boardHeight; j++) 
 	                {
-	                    int surrounding = 0;
+	                	surrounding = 0;
 	                    if(i - 1 < 0) // <- X * ?
 	                    {
 	                    	if(j - 1 < 0) // ? is additionally over the negative y border
@@ -1054,7 +1054,7 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 		        }
 	            try 
 	            {
-	                Thread.sleep(sleepTime);//movesPerSecond);
+	                Thread.sleep(sleepTime);
 	                run();
 	            } 
 	            catch(InterruptedException ex) 
@@ -1064,7 +1064,7 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 			{
 	            try 
 	            {
-	                Thread.sleep(1000/movesPerSecond);
+	                Thread.sleep(1000);
 	                run();
 	            } 
 	            catch(InterruptedException ex) 

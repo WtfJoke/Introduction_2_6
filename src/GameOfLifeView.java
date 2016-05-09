@@ -19,7 +19,8 @@ public class GameOfLifeView extends JPanel implements Observer
 	private static final long serialVersionUID = 1L;
 	public Color deadView;
 	public Color livingView;
-	public final int BLOCK_SIZE = 20;
+	private int blockSize = 20;
+
 	private GameOfLifeBoard gol;
 	
 	/**
@@ -82,14 +83,14 @@ public class GameOfLifeView extends JPanel implements Observer
             {	
         		// Draw new point
                 g.setColor(livingView);
-                g.fillRect(BLOCK_SIZE + (BLOCK_SIZE*newPoint.x), BLOCK_SIZE + (BLOCK_SIZE*newPoint.y), BLOCK_SIZE, BLOCK_SIZE);
+                g.fillRect(blockSize + (blockSize*newPoint.x), blockSize + (blockSize*newPoint.y), blockSize, blockSize);
                 gol.hasChanged();
                 gol.notifyObservers();
             }
             for(Point newPoint : gol.getDeadCellList())
             {	
                 g.setColor(deadView);
-                g.fillRect(BLOCK_SIZE + (BLOCK_SIZE*newPoint.x), BLOCK_SIZE + (BLOCK_SIZE*newPoint.y), BLOCK_SIZE, BLOCK_SIZE);
+                g.fillRect(blockSize + (blockSize*newPoint.x), blockSize + (blockSize*newPoint.y), blockSize, blockSize);
                 gol.hasChanged();
                 gol.notifyObservers();
             }
@@ -100,11 +101,29 @@ public class GameOfLifeView extends JPanel implements Observer
         // Need to implement dead cell draw logic
         for (int i=0; i<=(int)gol.getGameBoardSize().getWidth(); i++) 
         {
-        	g.drawLine(((i*BLOCK_SIZE)+BLOCK_SIZE), BLOCK_SIZE, (i*BLOCK_SIZE)+BLOCK_SIZE, BLOCK_SIZE + (BLOCK_SIZE*(int)gol.getGameBoardSize().getHeight()));
+        	g.drawLine(((i*blockSize)+blockSize), blockSize, (i*blockSize)+blockSize, blockSize + (blockSize*(int)gol.getGameBoardSize().getHeight()));
         }
         for (int i=0; i<=(int)gol.getGameBoardSize().getHeight(); i++) 
         {
-            g.drawLine(BLOCK_SIZE, ((i*BLOCK_SIZE)+BLOCK_SIZE), BLOCK_SIZE*((int)gol.getGameBoardSize().getWidth()+1), ((i*BLOCK_SIZE)+BLOCK_SIZE));
+            g.drawLine(blockSize, ((i*blockSize)+blockSize), blockSize*((int)gol.getGameBoardSize().getWidth()+1), ((i*blockSize)+blockSize));
         }
+	}
+	
+	/**
+	 * Getter for Block Size
+	 * @return the blockSize
+	 */
+	public int getBlockSize() 
+	{
+		return blockSize;
+	}
+
+	/**
+	 * Setter for Block Size
+	 * @param blockSize the blockSize to set
+	 */
+	public void setBlockSize(int blockSize) 
+	{
+		this.blockSize = blockSize;
 	}
 }
