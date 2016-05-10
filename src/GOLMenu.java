@@ -23,6 +23,7 @@ public class GOLMenu extends JFrame
 	private static final long serialVersionUID = 1L;
 	//Private and public members
 	public static boolean isNewGame = false;
+	public static GOLMenu newMenu;
 	public static GameOfLifeBoard newGolBoard;
 	private Container cp = new Container();
 	JLabel rowAmount = new JLabel("Row Amount");
@@ -81,7 +82,17 @@ public class GOLMenu extends JFrame
 		}
 		catch (NumberFormatException n)
 		{
-			JOptionPane.showMessageDialog(null, "Row number, column number or both are invalid or empty! Please type in whole numbers in the respective text boxes", "Error", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(newMenu, "Row number, column number or both are invalid or empty! Please type in whole numbers in the respective text boxes", "Error", JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		GameOfLifeView golView = new GameOfLifeView(newGolBoard);
+		try
+		{
+			golView.setBlockSize(Integer.parseInt(GOLMenu.blockSize.getText()));
+		}
+		catch(NumberFormatException n)
+		{
+			JOptionPane.showMessageDialog(newMenu, "Block size number invalid or empty! Please type in a whole number in the respective text box", "Error", JOptionPane.ERROR_MESSAGE);
 			return;
 		}
 		GameOfLifeChildFrame golChild = new GameOfLifeChildFrame(gameOfLife, newGolBoard);
@@ -92,8 +103,8 @@ public class GOLMenu extends JFrame
 	}
 	
 	public static void main(String[] args)
-	{
-		GOLMenu newMenu = new GOLMenu();
+	{	
+		newMenu = new GOLMenu();
 		newMenu.setTitle("Game Of Life Menu");
 		newMenu.setVisible(true);		
 	}

@@ -91,30 +91,14 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 		this.golView.setDeadCellColor(Color.RED);
 		if(GOLMenu.isNewGame)
 		{	
-			try
-			{
-				this.golView.setBlockSize(Integer.parseInt(GOLMenu.blockSize.getText()));
-				this.setSize(Integer.parseInt(GOLMenu.rowNumber.getText()) * Integer.parseInt(GOLMenu.blockSize.getText()) + 50, Integer.parseInt(GOLMenu.columnNumber.getText()) * Integer.parseInt(GOLMenu.blockSize.getText()) + 80);
-			}
-			catch(NumberFormatException n)
-			{
-				JOptionPane.showMessageDialog(null, "Block size number invalid or empty! Please type in a whole number in the respective text box", "Error", JOptionPane.ERROR_MESSAGE);
-				throw(n);
-			}
+			this.golView.setBlockSize(Integer.parseInt(GOLMenu.blockSize.getText()));
+			this.setSize(Integer.parseInt(GOLMenu.rowNumber.getText()) * Integer.parseInt(GOLMenu.blockSize.getText()) + 50, Integer.parseInt(GOLMenu.columnNumber.getText()) * Integer.parseInt(GOLMenu.blockSize.getText()) + 80);
 			GOLMenu.isNewGame = false;
 		}
 		else
 		{	
-			try
-			{
-				this.golView.setBlockSize(Integer.parseInt(GOLInternalMenu.blockSize.getText()));
-				this.setSize(Integer.parseInt(GOLInternalMenu.rowNumber.getText()) * Integer.parseInt(GOLInternalMenu.blockSize.getText()) + 50, Integer.parseInt(GOLInternalMenu.columnNumber.getText()) * Integer.parseInt(GOLInternalMenu.blockSize.getText()) + 80);
-			}
-			catch(NumberFormatException n)
-			{
-				JOptionPane.showMessageDialog(mvcGOL, "Block size number invalid or empty! Please type in a whole number in the respective text box", "Error", JOptionPane.ERROR_MESSAGE);
-				throw(n);
-			}		
+			this.golView.setBlockSize(Integer.parseInt(GOLInternalMenu.blockSize.getText()));
+			this.setSize(Integer.parseInt(GOLInternalMenu.rowNumber.getText()) * Integer.parseInt(GOLInternalMenu.blockSize.getText()) + 50, Integer.parseInt(GOLInternalMenu.columnNumber.getText()) * Integer.parseInt(GOLInternalMenu.blockSize.getText()) + 80);
 		}
 		createMenu();
 		cp = getContentPane();
@@ -207,9 +191,7 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 			public void actionPerformed(ActionEvent e) 
 			{
 				golBoard.setupGameBoard();
-				golView.updateGameBoardSize();	
-				golBoard.boardChanged();
-				golBoard.notifyObservers();				
+				golView.updateGameBoardSize();					
 			}		
 		});
 		menuBar.add(menuMode);
@@ -254,8 +236,17 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 				catch(NumberFormatException n)
 				{
 					JOptionPane.showMessageDialog(mvcGOL, "Row number, column number or both are invalid or empty! Please type in whole numbers in the respective text boxes", "Error", JOptionPane.ERROR_MESSAGE);
-					throw(n);
-				}				
+					return;
+				}
+				try
+				{
+					golView.setBlockSize(Integer.parseInt(GOLInternalMenu.blockSize.getText()));
+				}
+				catch(NumberFormatException n)
+				{
+					JOptionPane.showMessageDialog(mvcGOL, "Block size number invalid or empty! Please type in a whole number in the respective text box", "Error", JOptionPane.ERROR_MESSAGE);
+					return;
+				}	
 				GameOfLifeChildFrame golChild = new GameOfLifeChildFrame(mvcGOL, golBoard);
 				mvcGOL.addChild(golChild, 20, 20);
 				Thread gameOfLifeThread = new Thread(golChild);
@@ -309,9 +300,7 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 					JOptionPane.showMessageDialog(mvcGOL, "Board size too small! Row number and column number of the board must be at least 5", "Error", JOptionPane.ERROR_MESSAGE);
 					return;
 				}
-				repaint();
-				golBoard.hasChanged();
-				golBoard.notifyObservers();			
+				repaint();		
 			}
 		});
 		menuFigure.add(menuWindowSpaceship);
@@ -380,9 +369,7 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 					JOptionPane.showMessageDialog(mvcGOL, "Board size too small! Row number must be at least 7 and column number must be at least 6", "Error", JOptionPane.ERROR_MESSAGE);
 					return;
 				}
-				repaint();
-				golBoard.hasChanged();
-				golBoard.notifyObservers();			
+				repaint();		
 			}
 		});
 		menuBar.add(menuFigure);
