@@ -17,10 +17,9 @@ import javax.swing.JPanel;
 public class GameOfLifeView extends JPanel implements Observer
 {
 	private static final long serialVersionUID = 1L;
-	public Color deadView;
-	public Color livingView;
-	private int blockSize = 20;
-
+	private Color deadCellColor;
+	private Color livingCellColor;
+	private int blockSize;
 	private GameOfLifeBoard gol;
 	
 	/**
@@ -82,14 +81,14 @@ public class GameOfLifeView extends JPanel implements Observer
         	for (Point newPoint : gol.getLivingCellList()) 
             {	
         		// Draw new point
-                g.setColor(livingView);
+                g.setColor(livingCellColor);
                 g.fillRect(blockSize + (blockSize*newPoint.x), blockSize + (blockSize*newPoint.y), blockSize, blockSize);
                 gol.hasChanged();
                 gol.notifyObservers();
             }
             for(Point newPoint : gol.getDeadCellList())
             {	
-                g.setColor(deadView);
+                g.setColor(deadCellColor);
                 g.fillRect(blockSize + (blockSize*newPoint.x), blockSize + (blockSize*newPoint.y), blockSize, blockSize);
                 gol.hasChanged();
                 gol.notifyObservers();
@@ -125,5 +124,23 @@ public class GameOfLifeView extends JPanel implements Observer
 	public void setBlockSize(int blockSize) 
 	{
 		this.blockSize = blockSize;
+	}
+	
+	/**
+	 * Setter for living cell color
+	 * @param newColor the new color of the living cell to set
+	 */
+	public void setLivingCellColor(Color newColor)
+	{
+		this.livingCellColor = newColor;
+	}
+	
+	/**
+	 * Setter for dead cell color
+	 * @param newColor the new color of the dead cell to set
+	 */
+	public void setDeadCellColor(Color newColor)
+	{
+		this.deadCellColor = newColor;
 	}
 }
