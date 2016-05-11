@@ -255,6 +255,11 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 			 */
 			public void actionPerformed(ActionEvent e) 
 			{	
+				if(golBoard.getGameBoardSize().width < 5 || golBoard.getGameBoardSize().height < 5)
+				{
+					JOptionPane.showMessageDialog(mvcGOL, "Board size too small! Row number and column number of the board must be at least 5", "Error", JOptionPane.ERROR_MESSAGE);
+					return;
+				}
 				golBoard.setupGameBoard();
 				for(int x = 0; x < golBoard.getGameBoardSize().width; x++)
 				{
@@ -287,11 +292,6 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 						}	
 					}
 				}
-				if(golBoard.getGameBoardSize().width < 5 || golBoard.getGameBoardSize().height < 5)
-				{
-					JOptionPane.showMessageDialog(mvcGOL, "Board size too small! Row number and column number of the board must be at least 5", "Error", JOptionPane.ERROR_MESSAGE);
-					return;
-				}
 				repaint();		
 			}
 		});
@@ -304,6 +304,11 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 			 */
 			public void actionPerformed(ActionEvent e) 
 			{	
+				if(golBoard.getGameBoardSize().width < 7 || golBoard.getGameBoardSize().height < 6)
+				{
+					JOptionPane.showMessageDialog(mvcGOL, "Board size too small! Row number must be at least 7 and column number must be at least 6", "Error", JOptionPane.ERROR_MESSAGE);
+					return;
+				}
 				golBoard.setupGameBoard();
 				for(int x = 0; x < golBoard.getGameBoardSize().width; x++)
 				{
@@ -355,11 +360,6 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 							golBoard.addLivingCell(x,y);
 						}	
 					}
-				}
-				if(golBoard.getGameBoardSize().width < 7 || golBoard.getGameBoardSize().height < 6)
-				{
-					JOptionPane.showMessageDialog(mvcGOL, "Board size too small! Row number must be at least 7 and column number must be at least 6", "Error", JOptionPane.ERROR_MESSAGE);
-					return;
 				}
 				repaint();		
 			}
