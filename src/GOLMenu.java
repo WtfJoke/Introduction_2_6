@@ -76,23 +76,15 @@ public class GOLMenu extends JFrame
 		GOLMenu.isNewGame = true;
 		MVCGameOfLife gameOfLife = new MVCGameOfLife();
 		gameOfLife.addChild(new GOLInternalMenu(), 20, 20);	
-		try
-		{
-			newGolBoard = new GameOfLifeBoard(new Dimension(Integer.parseInt(GOLMenu.rowNumber.getText()), Integer.parseInt(GOLMenu.columnNumber.getText())));
-		}
-		catch (NumberFormatException n)
-		{
-			JOptionPane.showMessageDialog(newMenu, "Row number, column number or both are invalid or empty! Please type in whole numbers in the respective text boxes", "Error", JOptionPane.ERROR_MESSAGE);
-			return;
-		}
 		GameOfLifeView golView = new GameOfLifeView(newGolBoard);
 		try
 		{
+			newGolBoard = new GameOfLifeBoard(new Dimension(Integer.parseInt(GOLMenu.rowNumber.getText()), Integer.parseInt(GOLMenu.columnNumber.getText())));
 			golView.setBlockSize(Integer.parseInt(GOLMenu.blockSize.getText()));
 		}
-		catch(NumberFormatException n)
+		catch (NumberFormatException n)
 		{
-			JOptionPane.showMessageDialog(newMenu, "Block size number invalid or empty! Please type in a whole number in the respective text box", "Error", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(newMenu, "Input invalid or empty! Please type in whole numbers in the respective text boxes", "Error", JOptionPane.ERROR_MESSAGE);
 			return;
 		}
 		GameOfLifeChildFrame golChild = new GameOfLifeChildFrame(gameOfLife, newGolBoard);

@@ -232,21 +232,13 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 				try
 				{
 					golBoard.setGameBoardSize(new Dimension(Integer.parseInt(GOLInternalMenu.rowNumber.getText()), Integer.parseInt(GOLInternalMenu.columnNumber.getText())));
-				}
-				catch(NumberFormatException n)
-				{
-					JOptionPane.showMessageDialog(mvcGOL, "Row number, column number or both are invalid or empty! Please type in whole numbers in the respective text boxes", "Error", JOptionPane.ERROR_MESSAGE);
-					return;
-				}
-				try
-				{
 					golView.setBlockSize(Integer.parseInt(GOLInternalMenu.blockSize.getText()));
 				}
 				catch(NumberFormatException n)
 				{
-					JOptionPane.showMessageDialog(mvcGOL, "Block size number invalid or empty! Please type in a whole number in the respective text box", "Error", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(mvcGOL, "Input invalid or empty! Please type in whole numbers in the respective text boxes", "Error", JOptionPane.ERROR_MESSAGE);
 					return;
-				}	
+				}
 				GameOfLifeChildFrame golChild = new GameOfLifeChildFrame(mvcGOL, golBoard);
 				mvcGOL.addChild(golChild, 20, 20);
 				Thread gameOfLifeThread = new Thread(golChild);
