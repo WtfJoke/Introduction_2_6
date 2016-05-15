@@ -1,12 +1,23 @@
 import java.awt.Color;
 
+/**
+ * Class which creates the cell colors for Conways "Game Of Life"
+ * 
+ * @author Philipp Backes, 191710
+ * @author Viet Cuong Nguyen, 191515
+ */
+
 public class GOLColor
 {
-
+	//Private members
 	private Color color;
-
 	private String colorString;
-
+	
+	/**
+	 * Constructor
+	 * @param colorString name of the color (String)
+	 * @param color color of the respective color name (Color)
+	 */
 	public GOLColor(String colorString, Color color)
 	{
 		this.colorString = colorString;

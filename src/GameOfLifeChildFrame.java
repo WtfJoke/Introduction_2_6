@@ -19,8 +19,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 
 /**
- * Class which creates the views for Conways "Game of Life" children frames MVC:
- * View
+ * Class which creates the views for Conways "Game of Life" children frames 
  * 
  * @author Philipp Backes, 191710
  * @author Viet Cuong Nguyen, 191515
@@ -80,13 +79,13 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 		{
 			this.golView.setBlockSize(Integer.parseInt(GOLMenu.blockSize.getText()));
 			this.setSize(Integer.parseInt(GOLMenu.rowNumber.getText()) * Integer.parseInt(GOLMenu.blockSize.getText()) + 50,
-					Integer.parseInt(GOLMenu.columnNumber.getText()) * Integer.parseInt(GOLMenu.blockSize.getText()) + 80);
+					Integer.parseInt(GOLMenu.columnNumber.getText()) * Integer.parseInt(GOLMenu.blockSize.getText()) + 90);
 			GOLMenu.isNewGame = false;
 		} else
 		{
 			this.golView.setBlockSize(Integer.parseInt(GOLInternalMenu.blockSize.getText()));
 			this.setSize(Integer.parseInt(GOLInternalMenu.rowNumber.getText()) * Integer.parseInt(GOLInternalMenu.blockSize.getText()) + 50,
-					Integer.parseInt(GOLInternalMenu.columnNumber.getText()) * Integer.parseInt(GOLInternalMenu.blockSize.getText()) + 80);
+					Integer.parseInt(GOLInternalMenu.columnNumber.getText()) * Integer.parseInt(GOLInternalMenu.blockSize.getText()) + 90);
 		}
 		createMenu();
 		cp = getContentPane();
@@ -182,6 +181,7 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 			{
 				golBoard.setupGameBoard();
 				golView.updateGameBoardSize();
+				repaint();
 			}
 		});
 		menuBar.add(menuMode);
@@ -221,12 +221,27 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 			public void actionPerformed(ActionEvent e)
 			{
 				try
-				{
+				{	
+					if(Integer.parseInt(GOLInternalMenu.rowNumber.getText()) < 10 || Integer.parseInt(GOLInternalMenu.rowNumber.getText()) > 60)
+					{
+						JOptionPane.showMessageDialog(mvcGOL, "Row number must be between 10 and 60, Column number between 10 and 30 and block size number between 20 and 30", "Error", JOptionPane.ERROR_MESSAGE);
+						return;
+					}
+					if(Integer.parseInt(GOLInternalMenu.columnNumber.getText()) < 10 || Integer.parseInt(GOLInternalMenu.columnNumber.getText()) > 30)
+					{
+						JOptionPane.showMessageDialog(mvcGOL, "Row number must be between 10 and 60, Column number between 10 and 30 and block size number between 20 and 30", "Error", JOptionPane.ERROR_MESSAGE);
+						return;
+					}
+					if(Integer.parseInt(GOLInternalMenu.blockSize.getText()) < 20 || Integer.parseInt(GOLInternalMenu.blockSize.getText()) > 30)
+					{
+						JOptionPane.showMessageDialog(mvcGOL, "Row number must be between 10 and 60, Column number between 10 and 30 and block size number between 20 and 30", "Error", JOptionPane.ERROR_MESSAGE);
+						return;
+					}
 					golBoard.setGameBoardSize(new Dimension(Integer.parseInt(GOLInternalMenu.rowNumber.getText()), Integer.parseInt(GOLInternalMenu.columnNumber.getText())));
-					golView.setBlockSize(Integer.parseInt(GOLInternalMenu.blockSize.getText()));
-				} catch (NumberFormatException n)
+					golView.setBlockSize(Integer.parseInt(GOLInternalMenu.blockSize.getText()));		
+				} 
+				catch (NumberFormatException n)
 				{
-					JOptionPane.showMessageDialog(mvcGOL, "Input invalid or empty! Please type in whole numbers in the respective text boxes", "Error", JOptionPane.ERROR_MESSAGE);
 					return;
 				}
 				GameOfLifeChildFrame golChild = new GameOfLifeChildFrame(mvcGOL, golBoard);
@@ -245,11 +260,11 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 			 */
 			public void actionPerformed(ActionEvent e)
 			{
-				if (golBoard.getGameBoardSize().width < 5 || golBoard.getGameBoardSize().height < 5)
+				/*if (golBoard.getGameBoardSize().width < 5 || golBoard.getGameBoardSize().height < 5)
 				{
 					JOptionPane.showMessageDialog(mvcGOL, "Board size too small! Row number and column number of the board must be at least 5", "Error", JOptionPane.ERROR_MESSAGE);
 					return;
-				}
+				}*/
 				golBoard.setupGameBoard();
 				for (int x = 0; x < golBoard.getGameBoardSize().width; x++)
 				{
@@ -294,12 +309,12 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 			 */
 			public void actionPerformed(ActionEvent e)
 			{
-				if (golBoard.getGameBoardSize().width < 7 || golBoard.getGameBoardSize().height < 6)
+				/*if (golBoard.getGameBoardSize().width < 7 || golBoard.getGameBoardSize().height < 6)
 				{
 					JOptionPane.showMessageDialog(mvcGOL, "Board size too small! Row number must be at least 7 and column number must be at least 6", "Error",
 							JOptionPane.ERROR_MESSAGE);
 					return;
-				}
+				}*/
 				golBoard.setupGameBoard();
 				for (int x = 0; x < golBoard.getGameBoardSize().width; x++)
 				{
@@ -882,7 +897,8 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 						if (survivingCells.contains(new Point(x, y)))
 						{
 							golBoard.addLivingCell(x, y);
-						} else
+						} 
+						else
 						{
 							golBoard.addDeadCell(x, y);
 						}

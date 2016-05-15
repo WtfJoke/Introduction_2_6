@@ -78,13 +78,27 @@ public class GOLMenu extends JFrame
 		gameOfLife.addChild(new GOLInternalMenu(), 20, 20);	
 		GameOfLifeView golView = new GameOfLifeView(newGolBoard);
 		try
-		{
+		{	
+			if(Integer.parseInt(GOLMenu.rowNumber.getText()) < 10 || Integer.parseInt(GOLMenu.rowNumber.getText()) > 60)
+			{
+				JOptionPane.showMessageDialog(newMenu, "Row number must be between 10 and 60, Column number between 10 and 30 and block size number between 20 and 30", "Error", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			if(Integer.parseInt(GOLMenu.columnNumber.getText()) < 10 || Integer.parseInt(GOLMenu.columnNumber.getText()) > 30)
+			{
+				JOptionPane.showMessageDialog(newMenu, "Row number must be between 10 and 60, Column number between 10 and 30 and block size number between 20 and 30", "Error", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			if(Integer.parseInt(GOLMenu.blockSize.getText()) < 20 || Integer.parseInt(GOLMenu.blockSize.getText()) > 30)
+			{
+				JOptionPane.showMessageDialog(newMenu, "Row number must be between 10 and 60, Column number between 10 and 30 and block size number between 20 and 30", "Error", JOptionPane.ERROR_MESSAGE);
+				return;
+			}		
 			newGolBoard = new GameOfLifeBoard(new Dimension(Integer.parseInt(GOLMenu.rowNumber.getText()), Integer.parseInt(GOLMenu.columnNumber.getText())));
-			golView.setBlockSize(Integer.parseInt(GOLMenu.blockSize.getText()));
+			golView.setBlockSize(Integer.parseInt(GOLMenu.blockSize.getText()));	
 		}
 		catch (NumberFormatException n)
 		{
-			JOptionPane.showMessageDialog(newMenu, "Input invalid or empty! Please type in whole numbers in the respective text boxes", "Error", JOptionPane.ERROR_MESSAGE);
 			return;
 		}
 		GameOfLifeChildFrame golChild = new GameOfLifeChildFrame(gameOfLife, newGolBoard);
