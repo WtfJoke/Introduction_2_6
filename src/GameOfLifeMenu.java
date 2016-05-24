@@ -18,12 +18,12 @@ import javax.swing.JTextField;
  * @author Viet Cuong Nguyen, 191515
  */
 
-public class GOLMenu extends JFrame
+public class GameOfLifeMenu extends JFrame
 {
 	private static final long serialVersionUID = 1L;
-	//Private and public members
+	// Private and public members
 	public static boolean isNewGame = false;
-	public static GOLMenu newMenu;
+	public static GameOfLifeMenu newMenu;
 	public static GameOfLifeBoard newGolBoard;
 	private Container cp = new Container();
 	JLabel rowAmount = new JLabel("Row Amount");
@@ -35,7 +35,7 @@ public class GOLMenu extends JFrame
 	JButton newGame = new JButton("New Game Of Life");
 	JPanel wholeWindow = new JPanel();
 	
-	public GOLMenu()
+	public GameOfLifeMenu()
 	{	
 		this.setSize(250,150);
 		this.setResizable(false);
@@ -60,7 +60,7 @@ public class GOLMenu extends JFrame
 		{		
 			public void actionPerformed(ActionEvent e) 
 			{	
-				GOLMenu.createNewGame();
+				GameOfLifeMenu.createNewGame();
 			}			
 		});
 		wholeWindow.add(newGame);
@@ -73,29 +73,29 @@ public class GOLMenu extends JFrame
 	public static void createNewGame()
 	{	
 		GameOfLifeChildFrame.gameNr++;
-		GOLMenu.isNewGame = true;
+		GameOfLifeMenu.isNewGame = true;
 		MVCGameOfLife gameOfLife = new MVCGameOfLife();
-		gameOfLife.addChild(new GOLInternalMenu(), 20, 20);	
+		gameOfLife.addChild(new GameOfLifeNewViewOptionMenu(), 20, 20);	
 		GameOfLifeView golView = new GameOfLifeView(newGolBoard);
 		try
 		{	
-			if(Integer.parseInt(GOLMenu.rowNumber.getText()) < 10 || Integer.parseInt(GOLMenu.rowNumber.getText()) > 60)
+			if(Integer.parseInt(GameOfLifeMenu.rowNumber.getText()) < 10 || Integer.parseInt(GameOfLifeMenu.rowNumber.getText()) > 60)
 			{
 				JOptionPane.showMessageDialog(newMenu, "Row number must be between 10 and 60, Column number between 10 and 30 and block size number between 20 and 30", "Error", JOptionPane.ERROR_MESSAGE);
 				return;
 			}
-			if(Integer.parseInt(GOLMenu.columnNumber.getText()) < 10 || Integer.parseInt(GOLMenu.columnNumber.getText()) > 30)
+			if(Integer.parseInt(GameOfLifeMenu.columnNumber.getText()) < 10 || Integer.parseInt(GameOfLifeMenu.columnNumber.getText()) > 30)
 			{
 				JOptionPane.showMessageDialog(newMenu, "Row number must be between 10 and 60, Column number between 10 and 30 and block size number between 20 and 30", "Error", JOptionPane.ERROR_MESSAGE);
 				return;
 			}
-			if(Integer.parseInt(GOLMenu.blockSize.getText()) < 20 || Integer.parseInt(GOLMenu.blockSize.getText()) > 30)
+			if(Integer.parseInt(GameOfLifeMenu.blockSize.getText()) < 20 || Integer.parseInt(GameOfLifeMenu.blockSize.getText()) > 30)
 			{
 				JOptionPane.showMessageDialog(newMenu, "Row number must be between 10 and 60, Column number between 10 and 30 and block size number between 20 and 30", "Error", JOptionPane.ERROR_MESSAGE);
 				return;
 			}		
-			newGolBoard = new GameOfLifeBoard(new Dimension(Integer.parseInt(GOLMenu.rowNumber.getText()), Integer.parseInt(GOLMenu.columnNumber.getText())));
-			golView.setBlockSize(Integer.parseInt(GOLMenu.blockSize.getText()));	
+			newGolBoard = new GameOfLifeBoard(new Dimension(Integer.parseInt(GameOfLifeMenu.rowNumber.getText()), Integer.parseInt(GameOfLifeMenu.columnNumber.getText())));
+			golView.setBlockSize(Integer.parseInt(GameOfLifeMenu.blockSize.getText()));	
 		}
 		catch (NumberFormatException n)
 		{
@@ -110,7 +110,7 @@ public class GOLMenu extends JFrame
 	
 	public static void main(String[] args)
 	{	
-		newMenu = new GOLMenu();
+		newMenu = new GameOfLifeMenu();
 		newMenu.setTitle("Game Of Life Menu");
 		newMenu.setVisible(true);		
 	}

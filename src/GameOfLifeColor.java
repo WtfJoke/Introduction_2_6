@@ -7,9 +7,9 @@ import java.awt.Color;
  * @author Viet Cuong Nguyen, 191515
  */
 
-public class GOLColor
+public class GameOfLifeColor
 {
-	//Private members
+	// Private members
 	private Color color;
 	private String colorString;
 	
@@ -18,7 +18,7 @@ public class GOLColor
 	 * @param colorString name of the color (String)
 	 * @param color color of the respective color name (Color)
 	 */
-	public GOLColor(String colorString, Color color)
+	public GameOfLifeColor(String colorString, Color color)
 	{
 		this.colorString = colorString;
 		this.color = color;

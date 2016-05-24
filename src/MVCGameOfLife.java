@@ -11,7 +11,7 @@ import javax.swing.JInternalFrame;
  */
 public class MVCGameOfLife extends JApplet
 {	
-	//Private and public members
+	// Private and public members
 	private static final long serialVersionUID = 1L;
 	private JDesktopPane desk;
     
@@ -20,7 +20,7 @@ public class MVCGameOfLife extends JApplet
 	 */
 	public MVCGameOfLife() 
 	{
-		desk = new JDesktopPane(); //
+		desk = new JDesktopPane();
 		desk.setDesktopManager(new DefaultDesktopManager());
 		setContentPane(desk);
 	}

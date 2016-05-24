@@ -1,23 +1,20 @@
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import javax.swing.JButton;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 /** 
- * Class which creates an internal menu for Conways "Game of Life"
+ * Class which creates a option menu for all "New View" menus in child frames
  * @author Philipp Backes, 191710
  * @author Viet Cuong Nguyen, 191515
  */
-public class GOLInternalMenu extends JInternalFrame
+public class GameOfLifeNewViewOptionMenu extends JInternalFrame
 {	
 	private static final long serialVersionUID = 1L;
-	//Private and public members
+	// Private and public members
 	private Container cp = new Container();
 	JLabel rowAmount = new JLabel("Row Amount");
 	JLabel columnAmount = new JLabel ("Column Amount");
@@ -30,9 +27,9 @@ public class GOLInternalMenu extends JInternalFrame
 	/**
 	 * Constructor
 	 */
-	public GOLInternalMenu()
+	public GameOfLifeNewViewOptionMenu()
 	{	
-		super("Game of Life Internal Menu", false, false);
+		super("New View Settings Menu", false, false);
 		this.setSize(250,125);
 		cp = getContentPane();
 		wholeWindow.setLayout(new FlowLayout(FlowLayout.LEFT));

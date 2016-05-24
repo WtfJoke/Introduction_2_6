@@ -75,17 +75,17 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 		this.golBoard.setupGameBoard();
 		this.golView.setLivingCellColor(Color.GREEN);
 		this.golView.setDeadCellColor(Color.RED);
-		if (GOLMenu.isNewGame)
+		if (GameOfLifeMenu.isNewGame)
 		{
-			this.golView.setBlockSize(Integer.parseInt(GOLMenu.blockSize.getText()));
-			this.setSize(Integer.parseInt(GOLMenu.rowNumber.getText()) * Integer.parseInt(GOLMenu.blockSize.getText()) + 50,
-					Integer.parseInt(GOLMenu.columnNumber.getText()) * Integer.parseInt(GOLMenu.blockSize.getText()) + 90);
-			GOLMenu.isNewGame = false;
+			this.golView.setBlockSize(Integer.parseInt(GameOfLifeMenu.blockSize.getText()));
+			this.setSize(Integer.parseInt(GameOfLifeMenu.rowNumber.getText()) * Integer.parseInt(GameOfLifeMenu.blockSize.getText()) + 50,
+					Integer.parseInt(GameOfLifeMenu.columnNumber.getText()) * Integer.parseInt(GameOfLifeMenu.blockSize.getText()) + 90);
+			GameOfLifeMenu.isNewGame = false;
 		} else
 		{
-			this.golView.setBlockSize(Integer.parseInt(GOLInternalMenu.blockSize.getText()));
-			this.setSize(Integer.parseInt(GOLInternalMenu.rowNumber.getText()) * Integer.parseInt(GOLInternalMenu.blockSize.getText()) + 50,
-					Integer.parseInt(GOLInternalMenu.columnNumber.getText()) * Integer.parseInt(GOLInternalMenu.blockSize.getText()) + 90);
+			this.golView.setBlockSize(Integer.parseInt(GameOfLifeNewViewOptionMenu.blockSize.getText()));
+			this.setSize(Integer.parseInt(GameOfLifeNewViewOptionMenu.rowNumber.getText()) * Integer.parseInt(GameOfLifeNewViewOptionMenu.blockSize.getText()) + 50,
+					Integer.parseInt(GameOfLifeNewViewOptionMenu.columnNumber.getText()) * Integer.parseInt(GameOfLifeNewViewOptionMenu.blockSize.getText()) + 90);
 		}
 		createMenu();
 		cp = getContentPane();
@@ -109,7 +109,7 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 		revalidate();
 		repaint();
 	}
-
+	
 	/**
 	 * Method which creates a menu
 	 */
@@ -181,7 +181,8 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 			{
 				golBoard.setupGameBoard();
 				golView.updateGameBoardSize();
-				repaint();
+				golBoard.boardChanged();
+				golBoard.notifyObservers();
 			}
 		});
 		menuBar.add(menuMode);
@@ -222,23 +223,23 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 			{
 				try
 				{	
-					if(Integer.parseInt(GOLInternalMenu.rowNumber.getText()) < 10 || Integer.parseInt(GOLInternalMenu.rowNumber.getText()) > 60)
+					if(Integer.parseInt(GameOfLifeNewViewOptionMenu.rowNumber.getText()) < 10 || Integer.parseInt(GameOfLifeNewViewOptionMenu.rowNumber.getText()) > 60)
 					{
 						JOptionPane.showMessageDialog(mvcGOL, "Row number must be between 10 and 60, Column number between 10 and 30 and block size number between 20 and 30", "Error", JOptionPane.ERROR_MESSAGE);
 						return;
 					}
-					if(Integer.parseInt(GOLInternalMenu.columnNumber.getText()) < 10 || Integer.parseInt(GOLInternalMenu.columnNumber.getText()) > 30)
+					if(Integer.parseInt(GameOfLifeNewViewOptionMenu.columnNumber.getText()) < 10 || Integer.parseInt(GameOfLifeNewViewOptionMenu.columnNumber.getText()) > 30)
 					{
 						JOptionPane.showMessageDialog(mvcGOL, "Row number must be between 10 and 60, Column number between 10 and 30 and block size number between 20 and 30", "Error", JOptionPane.ERROR_MESSAGE);
 						return;
 					}
-					if(Integer.parseInt(GOLInternalMenu.blockSize.getText()) < 20 || Integer.parseInt(GOLInternalMenu.blockSize.getText()) > 30)
+					if(Integer.parseInt(GameOfLifeNewViewOptionMenu.blockSize.getText()) < 20 || Integer.parseInt(GameOfLifeNewViewOptionMenu.blockSize.getText()) > 30)
 					{
 						JOptionPane.showMessageDialog(mvcGOL, "Row number must be between 10 and 60, Column number between 10 and 30 and block size number between 20 and 30", "Error", JOptionPane.ERROR_MESSAGE);
 						return;
 					}
-					golBoard.setGameBoardSize(new Dimension(Integer.parseInt(GOLInternalMenu.rowNumber.getText()), Integer.parseInt(GOLInternalMenu.columnNumber.getText())));
-					golView.setBlockSize(Integer.parseInt(GOLInternalMenu.blockSize.getText()));		
+					golBoard.setGameBoardSize(new Dimension(Integer.parseInt(GameOfLifeNewViewOptionMenu.rowNumber.getText()), Integer.parseInt(GameOfLifeNewViewOptionMenu.columnNumber.getText())));
+					golView.setBlockSize(Integer.parseInt(GameOfLifeNewViewOptionMenu.blockSize.getText()));		
 				} 
 				catch (NumberFormatException n)
 				{
@@ -260,11 +261,6 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 			 */
 			public void actionPerformed(ActionEvent e)
 			{
-				/*if (golBoard.getGameBoardSize().width < 5 || golBoard.getGameBoardSize().height < 5)
-				{
-					JOptionPane.showMessageDialog(mvcGOL, "Board size too small! Row number and column number of the board must be at least 5", "Error", JOptionPane.ERROR_MESSAGE);
-					return;
-				}*/
 				golBoard.setupGameBoard();
 				for (int x = 0; x < golBoard.getGameBoardSize().width; x++)
 				{
@@ -297,7 +293,8 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 						}
 					}
 				}
-				repaint();
+				golBoard.boardChanged();
+				golBoard.notifyObservers();
 			}
 		});
 		menuFigure.add(menuWindowSpaceship);
@@ -309,12 +306,6 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 			 */
 			public void actionPerformed(ActionEvent e)
 			{
-				/*if (golBoard.getGameBoardSize().width < 7 || golBoard.getGameBoardSize().height < 6)
-				{
-					JOptionPane.showMessageDialog(mvcGOL, "Board size too small! Row number must be at least 7 and column number must be at least 6", "Error",
-							JOptionPane.ERROR_MESSAGE);
-					return;
-				}*/
 				golBoard.setupGameBoard();
 				for (int x = 0; x < golBoard.getGameBoardSize().width; x++)
 				{
@@ -367,7 +358,8 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 						}
 					}
 				}
-				repaint();
+				golBoard.boardChanged();
+				golBoard.notifyObservers();
 			}
 		});
 		menuBar.add(menuFigure);
@@ -406,19 +398,19 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 		});
 		popup.addSeparator();
 
-		createColors(new GOLColor("Black", Color.BLACK), new GOLColor("Blue", Color.BLUE), new GOLColor("Cyan", Color.CYAN), new GOLColor("Darkgray", Color.DARK_GRAY),
-				new GOLColor("Gray", Color.GRAY), new GOLColor("Green", Color.GREEN), new GOLColor("Lightgray", Color.LIGHT_GRAY), new GOLColor("Magenta", Color.MAGENTA),
-				new GOLColor("Orange", Color.ORANGE), new GOLColor("Pink", Color.PINK), new GOLColor("Red", Color.RED), new GOLColor("White", Color.WHITE),
-				new GOLColor("Yellow", Color.YELLOW));
+		createColors(new GameOfLifeColor("Black", Color.BLACK), new GameOfLifeColor("Blue", Color.BLUE), new GameOfLifeColor("Cyan", Color.CYAN), new GameOfLifeColor("Darkgray", Color.DARK_GRAY),
+				new GameOfLifeColor("Gray", Color.GRAY), new GameOfLifeColor("Green", Color.GREEN), new GameOfLifeColor("Lightgray", Color.LIGHT_GRAY), new GameOfLifeColor("Magenta", Color.MAGENTA),
+				new GameOfLifeColor("Orange", Color.ORANGE), new GameOfLifeColor("Pink", Color.PINK), new GameOfLifeColor("Red", Color.RED), new GameOfLifeColor("White", Color.WHITE),
+				new GameOfLifeColor("Yellow", Color.YELLOW));
 	}
 
 	/**
 	 * Method which creates colors for color selection menu
 	 * @param availableColors List of all colors
 	 */
-	private void createColors(GOLColor... availableColors)
+	private void createColors(GameOfLifeColor... availableColors)
 	{
-		for (GOLColor golColor : availableColors)
+		for (GameOfLifeColor golColor : availableColors)
 		{
 
 			JMenuItem item = new JMenuItem(golColor.getColorString());
@@ -879,7 +871,8 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 							{
 								survivingCells.add(new Point(i, j));
 							}
-						} else
+						} 
+						else
 						{
 							// Cell is dead, will the cell be reborn? (3)
 							if (surrounding == 3)
@@ -932,17 +925,9 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 
 	// Unused events
 	@Override
-	public void mouseMoved(MouseEvent e)
-	{
-	}
-
+	public void mouseMoved(MouseEvent e){}
 	@Override
-	public void mouseEntered(MouseEvent e)
-	{
-	}
-
+	public void mouseEntered(MouseEvent e){}
 	@Override
-	public void mouseExited(MouseEvent e)
-	{
-	}
+	public void mouseExited(MouseEvent e){}
 }
