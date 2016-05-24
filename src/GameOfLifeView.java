@@ -38,7 +38,6 @@ public class GameOfLifeView extends JPanel implements Observer
 	 */
 	public void update(Observable o, Object arg) 
 	{
-		// Update board size?
 		revalidate();
 		repaint();
 	}
@@ -66,7 +65,6 @@ public class GameOfLifeView extends JPanel implements Observer
 		}
 		gol.getDeadCellList().removeAll(removeDeadCellList);
 		gol.getLivingCellList().removeAll(removeLivingCellList);
-		//repaint();
 	}
 	
 	/**
@@ -83,6 +81,7 @@ public class GameOfLifeView extends JPanel implements Observer
         		// Draw new point
                 g.setColor(livingCellColor);
                 g.fillRect(blockSize + (blockSize*newPoint.x), blockSize + (blockSize*newPoint.y), blockSize, blockSize);
+                repaint();
                 gol.hasChanged();
                 gol.notifyObservers();
             }
@@ -90,6 +89,7 @@ public class GameOfLifeView extends JPanel implements Observer
             {	
                 g.setColor(deadCellColor);
                 g.fillRect(blockSize + (blockSize*newPoint.x), blockSize + (blockSize*newPoint.y), blockSize, blockSize);
+                repaint();
                 gol.hasChanged();
                 gol.notifyObservers();
             }
@@ -97,7 +97,6 @@ public class GameOfLifeView extends JPanel implements Observer
         catch (ConcurrentModificationException cme) {}
         // Setup grid
         g.setColor(Color.BLACK);
-        // Need to implement dead cell draw logic
         for (int i=0; i<=(int)gol.getGameBoardSize().getWidth(); i++) 
         {
         	g.drawLine(((i*blockSize)+blockSize), blockSize, (i*blockSize)+blockSize, blockSize + (blockSize*(int)gol.getGameBoardSize().getHeight()));

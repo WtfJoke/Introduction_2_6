@@ -7,7 +7,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 /** 
- * Class which creates a option menu for all "New View" menus in child frames
+ * Class which creates a option menu for the settings of all subsequent new views of a game
  * @author Philipp Backes, 191710
  * @author Viet Cuong Nguyen, 191515
  */

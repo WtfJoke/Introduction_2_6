@@ -79,13 +79,13 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 		{
 			this.golView.setBlockSize(Integer.parseInt(GameOfLifeMenu.blockSize.getText()));
 			this.setSize(Integer.parseInt(GameOfLifeMenu.rowNumber.getText()) * Integer.parseInt(GameOfLifeMenu.blockSize.getText()) + 50,
-					Integer.parseInt(GameOfLifeMenu.columnNumber.getText()) * Integer.parseInt(GameOfLifeMenu.blockSize.getText()) + 90);
+					Integer.parseInt(GameOfLifeMenu.columnNumber.getText()) * Integer.parseInt(GameOfLifeMenu.blockSize.getText()) + 100);
 			GameOfLifeMenu.isNewGame = false;
 		} else
 		{
 			this.golView.setBlockSize(Integer.parseInt(GameOfLifeNewViewOptionMenu.blockSize.getText()));
 			this.setSize(Integer.parseInt(GameOfLifeNewViewOptionMenu.rowNumber.getText()) * Integer.parseInt(GameOfLifeNewViewOptionMenu.blockSize.getText()) + 50,
-					Integer.parseInt(GameOfLifeNewViewOptionMenu.columnNumber.getText()) * Integer.parseInt(GameOfLifeNewViewOptionMenu.blockSize.getText()) + 90);
+					Integer.parseInt(GameOfLifeNewViewOptionMenu.columnNumber.getText()) * Integer.parseInt(GameOfLifeNewViewOptionMenu.blockSize.getText()) + 100);
 		}
 		createMenu();
 		cp = getContentPane();
@@ -238,8 +238,7 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 						JOptionPane.showMessageDialog(mvcGOL, "Row number must be between 10 and 60, Column number between 10 and 30 and block size number between 20 and 30", "Error", JOptionPane.ERROR_MESSAGE);
 						return;
 					}
-					golBoard.setGameBoardSize(new Dimension(Integer.parseInt(GameOfLifeNewViewOptionMenu.rowNumber.getText()), Integer.parseInt(GameOfLifeNewViewOptionMenu.columnNumber.getText())));
-					golView.setBlockSize(Integer.parseInt(GameOfLifeNewViewOptionMenu.blockSize.getText()));		
+					golBoard.setGameBoardSize(new Dimension(Integer.parseInt(GameOfLifeNewViewOptionMenu.rowNumber.getText()), Integer.parseInt(GameOfLifeNewViewOptionMenu.columnNumber.getText())));		
 				} 
 				catch (NumberFormatException n)
 				{
@@ -370,7 +369,6 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 		{
 			public void actionPerformed(ActionEvent e)
 			{
-
 				livingCells.setSelected(true);
 				deadCells.setSelected(false);
 			}
@@ -380,17 +378,13 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 		{
 			/**
 			 * Method which allows the color of the living cells to be changed
-			 * 
-			 * @param e
-			 *            Action event to be triggered (ActionEvent)
+			 * @param e Action event to be triggered (ActionEvent)
 			 */
 			public void actionPerformed(ActionEvent e)
 			{
 				/**
 				 * Method which allows the color of the dead cells to be changed
-				 * 
-				 * @param e
-				 *            Action event to be triggered (ActionEvent)
+				 * @param e Action event to be triggered (ActionEvent)
 				 */
 				livingCells.setSelected(false);
 				deadCells.setSelected(true);
@@ -412,7 +406,6 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 	{
 		for (GameOfLifeColor golColor : availableColors)
 		{
-
 			JMenuItem item = new JMenuItem(golColor.getColorString());
 			popup.add(item);
 			item.addActionListener(new ActionListener()
@@ -436,7 +429,6 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 				}
 			});
 		}
-
 	}
 
 	/**
@@ -882,7 +874,7 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 						}
 					}
 				}
-				golBoard.resetGameBoard(); // Reset board
+				golBoard.resetGameBoard();
 				for (int x = 0; x < boardWidth; x++)
 				{
 					for (int y = 0; y < boardHeight; y++)

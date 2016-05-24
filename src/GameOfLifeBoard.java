@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Observable;
 
 /** 
- * Class which creates a model for Conways "Game of Life"
+ * Class which creates the game board for Conways "Game of Life"
  * MVC: Model
  * 
  * @author Philipp Backes, 191710
@@ -122,8 +122,7 @@ public class GameOfLifeBoard extends Observable
 	 */
 	public void setGameBoardSize(Dimension newDimension)
 	{
-		//this.cellList.clear();
-		this.gameBoardSize = new Dimension((int)(newDimension.getWidth()),(int) (newDimension.getHeight())); 
+		this.gameBoardSize = new Dimension((int)(newDimension.getWidth()),(int)(newDimension.getHeight())); 
 	}
 
 	/**

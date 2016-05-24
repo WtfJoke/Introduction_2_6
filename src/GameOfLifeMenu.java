@@ -35,6 +35,9 @@ public class GameOfLifeMenu extends JFrame
 	JButton newGame = new JButton("New Game Of Life");
 	JPanel wholeWindow = new JPanel();
 	
+	/**
+	 * Constructor
+	 */
 	public GameOfLifeMenu()
 	{	
 		this.setSize(250,150);
@@ -57,7 +60,11 @@ public class GameOfLifeMenu extends JFrame
 		wholeWindow.setLayout(new FlowLayout(FlowLayout.CENTER));
 		newGame.setPreferredSize(new Dimension(150,20));
 		newGame.addActionListener(new ActionListener()
-		{		
+		{	
+			/**
+			 * Method which creates a new independent "Game Of Life"
+			 * @param e Action event to be triggered (ActionEvent)
+			 */
 			public void actionPerformed(ActionEvent e) 
 			{	
 				GameOfLifeMenu.createNewGame();
@@ -72,7 +79,6 @@ public class GameOfLifeMenu extends JFrame
 	 */
 	public static void createNewGame()
 	{	
-		GameOfLifeChildFrame.gameNr++;
 		GameOfLifeMenu.isNewGame = true;
 		MVCGameOfLife gameOfLife = new MVCGameOfLife();
 		gameOfLife.addChild(new GameOfLifeNewViewOptionMenu(), 20, 20);	
@@ -101,6 +107,7 @@ public class GameOfLifeMenu extends JFrame
 		{
 			return;
 		}
+		GameOfLifeChildFrame.gameNr++;
 		GameOfLifeChildFrame golChild = new GameOfLifeChildFrame(gameOfLife, newGolBoard);
 		gameOfLife.addChild(golChild, 30, 30);
 		Thread gameOfLifeThread = new Thread(golChild);
@@ -108,6 +115,9 @@ public class GameOfLifeMenu extends JFrame
 		Konsole.run(gameOfLife, 512, 512); 
 	}
 	
+	/**
+	 * @param args
+	 */
 	public static void main(String[] args)
 	{	
 		newMenu = new GameOfLifeMenu();
