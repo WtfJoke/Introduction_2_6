@@ -99,8 +99,8 @@ public class GameOfLifeMenu extends JFrame
 			{
 				JOptionPane.showMessageDialog(newMenu, "Row number must be between 10 and 60, Column number between 10 and 30 and block size number between 20 and 30", "Error", JOptionPane.ERROR_MESSAGE);
 				return;
-			}		
-			newGolBoard = new GameOfLifeBoard(new Dimension(Integer.parseInt(GameOfLifeMenu.rowNumber.getText()), Integer.parseInt(GameOfLifeMenu.columnNumber.getText())));
+			}	
+			newGolBoard = new GameOfLifeBoard(new Dimension(Integer.parseInt(GameOfLifeMenu.rowNumber.getText()), Integer.parseInt(GameOfLifeMenu.columnNumber.getText())));	
 			golView.setBlockSize(Integer.parseInt(GameOfLifeMenu.blockSize.getText()));	
 		}
 		catch (NumberFormatException n)

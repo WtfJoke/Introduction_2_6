@@ -72,7 +72,10 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 		this.golBoard = golBoard;
 		this.golView = new GameOfLifeView(this.golBoard);
 		this.golBoard.addObserver(golView);
-		this.golBoard.setupGameBoard();
+		if(GameOfLifeMenu.isNewGame)
+		{
+			this.golBoard.setupGameBoard();
+		}
 		this.golView.setLivingCellColor(Color.GREEN);
 		this.golView.setDeadCellColor(Color.RED);
 		if (GameOfLifeMenu.isNewGame)
@@ -220,7 +223,11 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 			 * @param e Action event to be triggered (ActionEvent)
 			 */
 			public void actionPerformed(ActionEvent e)
-			{
+			{	
+				boolean boardWiderThanBefore = false;
+				boolean boardTallerThanBefore = false;
+				int boardWidthBefore = 0;
+				int boardHeightBefore = 0;
 				try
 				{	
 					if(Integer.parseInt(GameOfLifeNewViewOptionMenu.rowNumber.getText()) < 10 || Integer.parseInt(GameOfLifeNewViewOptionMenu.rowNumber.getText()) > 60)
@@ -238,7 +245,37 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 						JOptionPane.showMessageDialog(mvcGOL, "Row number must be between 10 and 60, Column number between 10 and 30 and block size number between 20 and 30", "Error", JOptionPane.ERROR_MESSAGE);
 						return;
 					}
-					golBoard.setGameBoardSize(new Dimension(Integer.parseInt(GameOfLifeNewViewOptionMenu.rowNumber.getText()), Integer.parseInt(GameOfLifeNewViewOptionMenu.columnNumber.getText())));		
+					if(Integer.parseInt(GameOfLifeNewViewOptionMenu.rowNumber.getText()) > (int)golBoard.getGameBoardSize().getWidth())
+					{
+						boardWiderThanBefore = true;
+						boardWidthBefore = (int)golBoard.getGameBoardSize().getWidth();
+					}
+					if(Integer.parseInt(GameOfLifeNewViewOptionMenu.columnNumber.getText()) > (int)golBoard.getGameBoardSize().getHeight())
+					{
+						boardTallerThanBefore = true;
+						boardHeightBefore = (int)golBoard.getGameBoardSize().getHeight();
+					}
+					golBoard.setGameBoardSize(new Dimension(Integer.parseInt(GameOfLifeNewViewOptionMenu.rowNumber.getText()), Integer.parseInt(GameOfLifeNewViewOptionMenu.columnNumber.getText())));
+					if(boardWiderThanBefore)
+					{	
+						for(int x = boardWidthBefore; x < golBoard.getGameBoardSize().getWidth(); x++)
+						{
+							for(int y = 0; y < (int)golBoard.getGameBoardSize().getHeight(); y++)
+							{
+								golBoard.getDeadCellList().add(new Point(x,y));
+							}
+						}	
+					}
+					if(boardTallerThanBefore)
+					{	
+						for(int y = boardHeightBefore; y < golBoard.getGameBoardSize().getHeight(); y++)
+						{
+							for(int x = 0; x < (int)golBoard.getGameBoardSize().getWidth(); x++)
+							{
+								golBoard.getDeadCellList().add(new Point(x,y));
+							}
+						}
+					}
 				} 
 				catch (NumberFormatException n)
 				{
