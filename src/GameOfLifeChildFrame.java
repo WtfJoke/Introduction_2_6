@@ -429,19 +429,15 @@ public class GameOfLifeChildFrame extends JInternalFrame implements MouseListene
 		});
 		popup.addSeparator();
 
-		createColors(new GameOfLifeColor("Black", Color.BLACK), new GameOfLifeColor("Blue", Color.BLUE), new GameOfLifeColor("Cyan", Color.CYAN), new GameOfLifeColor("Darkgray", Color.DARK_GRAY),
-				new GameOfLifeColor("Gray", Color.GRAY), new GameOfLifeColor("Green", Color.GREEN), new GameOfLifeColor("Lightgray", Color.LIGHT_GRAY), new GameOfLifeColor("Magenta", Color.MAGENTA),
-				new GameOfLifeColor("Orange", Color.ORANGE), new GameOfLifeColor("Pink", Color.PINK), new GameOfLifeColor("Red", Color.RED), new GameOfLifeColor("White", Color.WHITE),
-				new GameOfLifeColor("Yellow", Color.YELLOW));
+		createColors();
 	}
 
 	/**
 	 * Method which creates colors for color selection menu
-	 * @param availableColors List of all colors
 	 */
-	private void createColors(GameOfLifeColor... availableColors)
+	private void createColors()
 	{
-		for (GameOfLifeColor golColor : availableColors)
+		for (GameOfLifeColor golColor : GameOfLifeColor.asList())
 		{
 			JMenuItem item = new JMenuItem(golColor.getColorString());
 			popup.add(item);
